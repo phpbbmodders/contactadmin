@@ -7,13 +7,6 @@
 	var imageTag = false;
 </script>
 <h1>{{ lang('ACP_CAT_CONTACTADMIN') }}</h1>
-<fieldset>
-	<legend>{{ lang('BUY_ME_A_BEER') }}</legend>
-	<dl>
-		<dt><label>{{ lang('BUY_ME_A_BEER_SHORT') ~ lang('COLON') }}</label><br><span>{{ lang('BUY_ME_A_BEER_EXPLAIN') }}</span></dt>
-		<dd><a href="{{ lang('BUY_ME_A_BEER_URL') }}" target="_blank" rel="noreferrer noopener"><img src="{{ lang('PAYPAL_IMAGE_URL') }}" alt="{{ lang('PAYPAL_ALT') }}" style="cursor: pointer; margin-top: 15px;"></a></dd>
-	</dl>
-</fieldset>
 {% if CONTACT_ERROR %}
 	<div class="errorbox"><h3>{{ lang('WARNING') }}</h3>
 		<p>{{ CONTACT_ERROR }}</p>
