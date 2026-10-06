@@ -1,14 +1,15 @@
 <?php
 /**
-*
-* Contact Admin extension for the phpBB Forum Software package.
-*
-* @copyright 2016 Rich McGirr (RMcGirr83)
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Contact Admin extension for the phpBB Forum Software package
+ *
+ * @copyright 2016 Rich McGirr (RMcGirr83)
+ * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
-namespace rmcgirr83\contactadmin\controller;
+namespace phpbbmodders\contactadmin\controller;
 
 use phpbb\auth\auth;
 use phpbb\config\config;
@@ -20,7 +21,7 @@ use phpbb\log\log;
 use phpbb\request\request;
 use phpbb\template\template;
 use phpbb\user;
-use rmcgirr83\contactadmin\core\contactadmin as contactadmin;
+use phpbbmodders\contactadmin\core\contactadmin as contactadmin;
 
 class admin_controller
 {
@@ -123,7 +124,7 @@ class admin_controller
 	public function display_options()
 	{
 		$this->language->add_lang(['acp/board', 'posting']);
-		$this->language->add_lang('acp_contact', 'rmcgirr83/contactadmin');
+		$this->language->add_lang('acp_contact', 'phpbbmodders/contactadmin');
 
 		// Create a form key for preventing CSRF attacks
 		add_form_key('contactadmin_settings');
@@ -295,7 +296,7 @@ class admin_controller
 			'S_BBCODE_FLASH'		=> true,
 			'S_LINKS_ALLOWED'		=> true,
 
-			'AJAX_BOT_USER_INFO'	=> $this->helper->route('rmcgirr83_contactadmin_botuserinfo', ['user_id' => (int) $this->config['contactadmin_bot_user']]),
+			'AJAX_BOT_USER_INFO'	=> $this->helper->route('phpbbmodders_contactadmin_botuserinfo', ['user_id' => (int) $this->config['contactadmin_bot_user']]),
 
 			'U_ACTION'				=> $this->u_action,
 		]);

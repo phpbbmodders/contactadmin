@@ -2,8 +2,8 @@ imports:
     - {resource: contact_constants.yml}
 
 services:
-    rmcgirr83.contactadmin.admin.controller:
-        class: rmcgirr83\contactadmin\controller\admin_controller
+    phpbbmodders.contactadmin.admin.controller:
+        class: phpbbmodders\contactadmin\controller\admin_controller
         arguments:
             - '@auth'
             - '@config'
@@ -15,13 +15,13 @@ services:
             - '@request'
             - '@template'
             - '@user'
-            - '@rmcgirr83.contactadmin.core'
+            - '@phpbbmodders.contactadmin.core'
             - '%core.root_path%'
             - '%core.php_ext%'
             - '%contact_constants%'
 
-    rmcgirr83.contactadmin.main.controller:
-        class: rmcgirr83\contactadmin\controller\main_controller
+    phpbbmodders.contactadmin.main.controller:
+        class: phpbbmodders\contactadmin\controller\main_controller
         arguments:
             - '@auth'
             - '@config'
@@ -34,14 +34,14 @@ services:
             - '@request'
             - '@template'
             - '@user'
-            - '@rmcgirr83.contactadmin.core'
+            - '@phpbbmodders.contactadmin.core'
             - '@captcha.factory'
             - '%core.root_path%'
             - '%core.php_ext%'
             - '%contact_constants%'
 
-    rmcgirr83.contactadmin.listener:
-        class: rmcgirr83\contactadmin\event\listener
+    phpbbmodders.contactadmin.listener:
+        class: phpbbmodders\contactadmin\event\listener
         arguments:
             - '@config'
             - '@controller.helper'
@@ -51,8 +51,8 @@ services:
         tags:
             - { name: event.listener }
 
-    rmcgirr83.contactadmin.core:
-        class: rmcgirr83\contactadmin\core\contactadmin
+    phpbbmodders.contactadmin.core:
+        class: phpbbmodders\contactadmin\core\contactadmin
         arguments:
             - '@auth'
             - '@cache'

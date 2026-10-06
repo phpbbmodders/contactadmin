@@ -1,13 +1,14 @@
 <?php
 /**
-*
-* Contact admin extension for the phpBB Forum Software package.
-*
-* @copyright 2016 Rich McGirr (RMcGirr83)
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
-namespace rmcgirr83\contactadmin\controller;
+ *
+ * Contact Admin extension for the phpBB Forum Software package
+ *
+ * @copyright 2016 Rich McGirr (RMcGirr83)
+ * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+namespace phpbbmodders\contactadmin\controller;
 
 use phpbb\auth\auth;
 use phpbb\config\config;
@@ -20,7 +21,7 @@ use phpbb\log\log;
 use phpbb\request\request;
 use phpbb\template\template;
 use phpbb\user;
-use rmcgirr83\contactadmin\core\contactadmin as contactadmin;
+use phpbbmodders\contactadmin\core\contactadmin as contactadmin;
 use phpbb\captcha\factory as captcha_factory;
 use phpbb\exception\http_exception;
 
@@ -142,7 +143,7 @@ class main_controller
 	public function displayform()
 	{
 		$this->language->add_lang(['ucp', 'posting']);
-		$this->language->add_lang('contact', 'rmcgirr83/contactadmin');
+		$this->language->add_lang('contact', 'phpbbmodders/contactadmin');
 
 		// move this from the constructor so the query isn't run on every page
 		$contact_reasons = $this->db_text->get_array(['contactadmin_reasons']);
@@ -390,13 +391,13 @@ class main_controller
 			/**
 			* Modify data and error strings
 			*
-			* @event rmcgirr83.contactadmin.modify_data_and_error
+			* @event phpbbmodders.contactadmin.modify_data_and_error
 			* @var array	error			Error strings
 			* @var array	data			An array with data
 			* @since 1.0.0
 			*/
 			$vars = ['error', 'data'];
-			extract($this->dispatcher->trigger_event('rmcgirr83.contactadmin.modify_data_and_error', compact($vars)));
+			extract($this->dispatcher->trigger_event('phpbbmodders.contactadmin.modify_data_and_error', compact($vars)));
 
 			// no errors, let's proceed
 			if (!sizeof($error))
@@ -518,7 +519,7 @@ class main_controller
 
 						// build an array of all lang directories for the extension and check to make sure we have the lang available that is being chosen
 						// if the lang isn't present then errors will present themselves due to no email template found
-						$dir_array = $this->contactadmin->dir_to_array($this->root_path .'ext/rmcgirr83/contactadmin/language');
+						$dir_array = $this->contactadmin->dir_to_array($this->root_path .'ext/phpbbmodders/contactadmin/language');
 
 						$size = count($contact_users);
 						// Loop through our list of users
@@ -550,7 +551,7 @@ class main_controller
 							// now check if the email template may exist.  Can't be helped if there is a lang dir and no email dir
 							// use en if not exist
 							$contact_users[$i]['user_lang'] =  (in_array($contact_users[$i]['user_lang'], $dir_array)) ? $contact_users[$i]['user_lang'] : 'en';
-							$messenger->template('@rmcgirr83_contactadmin/contact', $contact_users[$i]['user_lang']);
+							$messenger->template('@phpbbmodders_contactadmin/contact', $contact_users[$i]['user_lang']);
 
 							$messenger->to($contact_users[$i]['user_email'], $contact_users[$i]['username']);
 							$messenger->im($contact_users[$i]['user_jabber'], $contact_users[$i]['username']);
@@ -674,7 +675,7 @@ class main_controller
 			'S_CONTACT_ADMIN'		=> true,
 			'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 			'S_ERROR'				=> (isset($error) && count($error)) ? implode('<br />', $error) : '',
-			'S_CONTACT_ACTION'		=> $this->helper->route('rmcgirr83_contactadmin_displayform'),
+			'S_CONTACT_ACTION'		=> $this->helper->route('phpbbmodders_contactadmin_displayform'),
 			'S_CONTACT_GDPR'		=> ($this->config['contactadmin_gdpr'] && empty($this->user->data['is_registered'])) ? true : false,
 		]);
 

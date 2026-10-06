@@ -1,13 +1,14 @@
 <?php
 /**
-*
-* Contact admin extension for the phpBB Forum Software package.
-*
-* @copyright 2016 Rich McGirr (RMcGirr83)
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
-namespace rmcgirr83\contactadmin\event;
+ *
+ * Contact Admin extension for the phpBB Forum Software package
+ *
+ * @copyright 2016 Rich McGirr (RMcGirr83)
+ * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+namespace phpbbmodders\contactadmin\event;
 
 /**
 * @ignore
@@ -95,7 +96,7 @@ class listener implements EventSubscriberInterface
 		$action = $event['action'];
 		$ext_name = $event['ext_name'];
 
-		if ($action == 'disable' && $ext_name == 'rmcgirr83/contactadmin')
+		if ($action == 'disable' && $ext_name == 'phpbbmodders/contactadmin')
 		{
 			$this->config->set('contact_admin_form_enable', true);
 		}
@@ -110,7 +111,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function extension_enabled($event)
 	{
-		$this->language->add_lang('acp_contact', 'rmcgirr83/contactadmin');
+		$this->language->add_lang('acp_contact', 'phpbbmodders/contactadmin');
 		$this->template->assign_vars([
 			'L_CONTACT_US_ENABLE_EXPLAIN'	=> $this->language->lang('CONTACT_EXTENSION_ACTIVE'),
 		]);
@@ -154,7 +155,7 @@ class listener implements EventSubscriberInterface
 
 			$this->template->assign_vars([
 				'U_CONTACT_US'		=> false,
-				'U_CONTACTADMIN'	=> $this->helper->route('rmcgirr83_contactadmin_displayform'),
+				'U_CONTACTADMIN'	=> $this->helper->route('phpbbmodders_contactadmin_displayform'),
 				'S_FORUM_VERSION'	=> $version,
 			]);
 		}
@@ -173,7 +174,7 @@ class listener implements EventSubscriberInterface
 		$result = $event['result'];
 		if ($result['error_msg'] == 'LOGIN_ERROR_USERNAME' || $result['error_msg'] == 'LOGIN_ERROR_PASSWORD')
 		{
-			$error = $this->language->lang($result['error_msg'], '<a href="' . $this->helper->route('rmcgirr83_contactadmin_displayform') . '">', '</a>');
+			$error = $this->language->lang($result['error_msg'], '<a href="' . $this->helper->route('phpbbmodders_contactadmin_displayform') . '">', '</a>');
 		}
 		$event['err'] = $error;
 	}
@@ -188,7 +189,7 @@ class listener implements EventSubscriberInterface
 	public function contact_form_register($event)
 	{
 		$this->template->assign_vars([
-			'L_CONFIRM_EXPLAIN' => $this->language->lang('CONFIRM_EXPLAIN', '<a href="' . $this->helper->route('rmcgirr83_contactadmin_displayform') . '">', '</a>'),
+			'L_CONFIRM_EXPLAIN' => $this->language->lang('CONFIRM_EXPLAIN', '<a href="' . $this->helper->route('phpbbmodders_contactadmin_displayform') . '">', '</a>'),
 		]);
 	}
 }
