@@ -1,14 +1,15 @@
 <?php
 /**
-*
-* Contact Admin extension for the phpBB Forum Software package.
-*
-* @copyright 2016 Rich McGirr (RMcGirr83)
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Contact Admin extension for the phpBB Forum Software package
+ *
+ * @copyright 2016 Rich McGirr (RMcGirr83)
+ * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
-namespace rmcgirr83\contactadmin\migrations;
+namespace phpbbmodders\contactadmin\migrations;
 
 /**
 * Primary migration
@@ -52,7 +53,7 @@ class version_100 extends \phpbb\db\migration\migration
 				'acp',
 				'ACP_CAT_CONTACTADMIN',
 				array(
-					'module_basename'	=> '\rmcgirr83\contactadmin\acp\contactadmin_module',
+					'module_basename'	=> '\phpbbmodders\contactadmin\acp\contactadmin_module',
 					'modes'				=> array('configuration'),
 				),
 			)),

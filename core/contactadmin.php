@@ -1,13 +1,14 @@
 <?php
 /**
-*
-* Contact Admin extension for the phpBB Forum Software package.
-*
-* @copyright 2016 Rich McGirr (RMcGirr83)
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
-namespace rmcgirr83\contactadmin\core;
+ *
+ * Contact Admin extension for the phpBB Forum Software package
+ *
+ * @copyright 2016 Rich McGirr (RMcGirr83)
+ * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
+namespace phpbbmodders\contactadmin\core;
 
 use phpbb\auth\auth;
 use phpbb\cache\service as cache;
@@ -179,7 +180,7 @@ class contactadmin
 				{
 
 					// send an email to the board default
-					$email_template = '@rmcgirr83_contactadmin/contact_error';
+					$email_template = '@phpbbmodders_contactadmin/contact_error';
 					$email_message = $this->language->lang('CONTACT_BOT_MESSAGE', $this->user->data['username'], $this->config['sitename'], $this->language->lang('FORUM'), $server_url);
 					$this->contact_send_email($email_template, $email_message);
 
@@ -218,7 +219,7 @@ class contactadmin
 				if (!$row && $this->config['email_enable'])
 				{
 					// send an email to the board default
-					$email_template = '@rmcgirr83_contactadmin/contact_error';
+					$email_template = '@phpbbmodders_contactadmin/contact_error';
 					$email_message = $this->language->lang('CONTACT_BOT_MESSAGE', $this->user->data['username'], $this->config['sitename'], $this->language->lang('USER'), $server_url);
 					$this->contact_send_email($email_template, $email_message);
 
@@ -259,7 +260,7 @@ class contactadmin
 				if ($this->config['email_enable'])
 				{
 					// send an email to the board default
-					$email_template = '@rmcgirr83_contactadmin/contact_error';
+					$email_template = '@phpbbmodders_contactadmin/contact_error';
 					$email_message = $this->language->lang('CONTACT_NONE', $this->user->data['username'], $this->config['sitename'], $error, $server_url);
 
 					$this->contact_send_email($email_template, $email_message);
@@ -295,7 +296,7 @@ class contactadmin
 	 */
 	private function contact_send_email($email_template, $email_message)
 	{
-		$dir_array = $this->dir_to_array($this->root_path .'ext/rmcgirr83/contactadmin/language');
+		$dir_array = $this->dir_to_array($this->root_path .'ext/phpbbmodders/contactadmin/language');
 
 		$lang = (in_array($this->config['default_lang'], $dir_array)) ? $this->config['default_lang'] : 'en';
 

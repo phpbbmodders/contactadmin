@@ -1,12 +1,13 @@
 <?php
 /**
-*
-* Contact admin extension for the phpBB Forum Software package.
-*
-* @copyright 2016 Rich McGirr (RMcGirr83)
-* @license GNU General Public License, version 2 (GPL-2.0)
-*
-*/
+ *
+ * Contact Admin extension for the phpBB Forum Software package
+ *
+ * @copyright 2016 Rich McGirr (RMcGirr83)
+ * @copyright (c) 2026, phpBB Modders, https://www.phpbbmodders.com/
+ * @license GNU General Public License, version 2 (GPL-2.0)
+ *
+ */
 
 if (!defined('IN_PHPBB'))
 {
@@ -46,11 +47,4 @@ $lang = array_merge($lang, [
 	'LOG_CONTACT_EMAIL_INVALID'		=> '<strong>The Contact Admin extension is allowing emails but the forum is not setup to allow emails.  The extension has been disabled.',
 	'LOG_CONTACT_NONE'				=> '<strong>No Administrators are allowing users to contact them via %1$s in the Contact Admin extension</strong>',
 	'LOG_CONTACT_CONFIG_UPDATE'		=> '<strong>Updated Contact Admin config settings</strong>',
-	//Donation
-	'PAYPAL_IMAGE_URL'          => 'https://www.paypalobjects.com/webstatic/en_US/i/btn/png/silver-pill-paypal-26px.png',
-	'PAYPAL_ALT'                => 'Donate using PayPal',
-	'BUY_ME_A_BEER_URL'         => 'https://paypal.me/RMcGirr83',
-	'BUY_ME_A_BEER'				=> 'Buy me a beer for creating this extension',
-	'BUY_ME_A_BEER_SHORT'		=> 'Make a donation for this extension',
-	'BUY_ME_A_BEER_EXPLAIN'		=> 'This extension is completely free. It is a project that I spend my time on for the enjoyment and use of the phpBB community. If you enjoy using this extension, or if it has benefited your forum, please consider <a href="https://paypal.me/RMcGirr83" target="_blank" rel="noreferrer noopener">buying me a beer</a>. It would be greatly appreciated. <i class="fa fa-smile-o" style="color:green;font-size:1.5em;" aria-hidden="true"></i>',
 ]);
