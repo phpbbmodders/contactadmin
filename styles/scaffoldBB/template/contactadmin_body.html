@@ -1,4 +1,4 @@
-{% INCLUDE 'overall_header.html' %}
+{% include 'overall_header.html' %}
 <h2 class="fs-4 titlespace">{{ lang('ACP_CAT_CONTACTADMIN') }}</h2>
 
 <form method="post" id="postform" name="postform" action="{{ S_CONTACT_ACTION }}"{{ S_FORM_ENCTYPE }}>
@@ -33,13 +33,17 @@
 		</dl>
 		<hr />
 		{% endif %}
-		{% if CONTACT_REASONS %}
+		{% if S_CONTACT_REASONS %}
 		<dl class="row gx-0 mb-1">
 			<dt class="col-md-2 mb-1"><label for="contact_reason">{{ lang('CONTACT_REASON') }}{{ lang('COLON') }}</label></dt>
-			<dd class="col-md-auto mb-1"><select class="form-select form-select-sm" name="contact_reason" id="contact_reason" tabindex="4">{{ CONTACT_REASONS }}</select></dd>
+			<dd class="col-md-auto mb-1"><select class="form-select form-select-sm" name="contact_reason" id="contact_reason" tabindex="4">
+				{% for reason in loops.contact_reasons %}
+					<option value="{{ reason.VALUE }}"{% if reason.S_SELECTED %} selected="selected"{% endif %}>{{ reason.VALUE }}</option>
+				{% endfor %}
+			</select></dd>
 		</dl>
 		{% endif %}
-		{% if not CONTACT_REASONS %}
+		{% if not S_CONTACT_REASONS %}
 		<dl class="row gx-0 mb-1">
 			<dt class="col-md-2 mb-1"><label for="contact_subject">{{ lang('SUBJECT') }}{{ lang('COLON') }}</label></dt>
 			<dd class="col-md-auto mb-1"><input type="text" size="45" maxlength="64" class="inputbox form-control form-control-sm" name="contact_subject" id="contact_subject" value="{{ CONTACT_SUBJECT }}" tabindex="5" /></dd>
@@ -47,7 +51,7 @@
 		{% endif %}
 		<dl class="row gx-0 mb-1">
 			<dt class="col-md-2 mb-1"><label for="message">{{ lang('MESSAGE_BODY') }}{{ lang('COLON') }}</label></dt>
-			<dd class="col-md-10 mb-1"><textarea name="message" id="message" class="inputbox form-control form-control-sm" tabindex="6" style="width:98%;height:160px;">{{ CONTACT_MESSAGE }}</textarea></dd>
+			<dd class="col-md-10 mb-1"><textarea name="message" id="message" class="inputbox form-control form-control-sm" tabindex="6" rows="8">{{ CONTACT_MESSAGE }}</textarea></dd>
 		</dl>
 		</fieldset>
 	</div>
@@ -73,7 +77,7 @@
 	<div class="inner">
 	<fieldset class="fields2">
 	{% DEFINE CAPTCHA_TAB_INDEX = 8 %}
-	{% INCLUDE ''~ CONTACT_ADMIN_CAPTCHA_TEMPLATE ~'' %}
+	{% include CONTACT_ADMIN_CAPTCHA_TEMPLATE %}
 	</fieldset>
 	</div>
 </div>
@@ -83,7 +87,7 @@
 <div class="panel bg3 bg-secondary bg-opacity-10 rounded-3 p-2 mb-1" id="attach-panel">
 	<div class="inner">
 
-	<p>{{ lang('ADD_ATTACHMENT_EXPLAIN') }}</p>
+	<p>{{ lang('CONTACT_ADD_ATTACHMENT_EXPLAIN') }}</p>
 
 	<fieldset class="fields2" id="attach-panel-basic">
 	<dl class="row gx-0 mb-1">
@@ -107,7 +111,7 @@
 
 	<fieldset class="submit-buttons d-flex justify-content-center">
 		{{ S_HIDDEN_FIELDS }}
-		<input type="submit" name="submit" id="submit" value="{{ lang('SUBMIT') }}" class="btn btn-primary btn-sm button fw-bold button1" tabindex="9" />&nbsp;
+		<input type="submit" name="submit" id="submit" value="{{ lang('SUBMIT')|e('html_attr') }}" class="btn btn-primary btn-sm button fw-bold button1" tabindex="9" />&nbsp;
 		{{ S_FORM_TOKEN }}
 	</fieldset>
 
@@ -116,4 +120,4 @@
 
 </form>
 
-{% INCLUDE 'overall_footer.html' %}
+{% include 'overall_footer.html' %}

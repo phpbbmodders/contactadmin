@@ -4,6 +4,6 @@ phpbbmodders_contactadmin_displayform:
 
 phpbbmodders_contactadmin_botuserinfo:
     path: /contact_bot_info/{user_id}
-    defaults: { _controller: phpbbmodders.contactadmin.core:bot_user_info }
+    defaults: { _controller: phpbbmodders.contactadmin.core:bot_user_info_json }
     requirements:
         user_id: \d+

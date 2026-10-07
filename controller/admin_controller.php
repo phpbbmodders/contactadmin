@@ -23,6 +23,9 @@ use phpbb\template\template;
 use phpbb\user;
 use phpbbmodders\contactadmin\core\contactadmin as contactadmin;
 
+/**
+* ACP settings page for the contact form
+*/
 class admin_controller
 {
 	/** @var auth */
@@ -55,7 +58,7 @@ class admin_controller
 	/** @var user */
 	protected $user;
 
-	/* @var contactadmin */
+	/** @var contactadmin */
 	protected $contactadmin;
 
 	/** @var string root_path */
@@ -121,6 +124,12 @@ class admin_controller
 		$this->contact_constants = $contact_constants;
 	}
 
+	/**
+	 * Display and save the settings page
+	 *
+	 * @return void
+	 * @access public
+	 */
 	public function display_options()
 	{
 		$this->language->add_lang(['acp/board', 'posting']);
@@ -190,11 +199,11 @@ class admin_controller
 
 			if (in_array($this->request->variable('contact_method', 0), [$contact_method_email, $contact_method_pm]))
 			{
-				$admins_exist = $this->check_for_admins($this->request->variable('contact_method', 0));
+				$admins_exist = $this->check_for_admins();
 
 				if (!$admins_exist)
 				{
-					$error[] = $this->language->lang('ADMINS_NOT_EXIST_FOR_METHOD', $this->request->variable('contact_method', 0));
+					$error[] = $this->language->lang(($this->request->variable('contact_method', 0) == $contact_method_email) ? 'ADMINS_NOT_EXIST_EMAIL' : 'ADMINS_NOT_EXIST_PM');
 				}
 			}
 
@@ -237,39 +246,29 @@ class admin_controller
 		$contact_admin_info_preview = '';
 		if ($this->request->is_set_post('preview'))
 		{
-			generate_text_for_storage(
-				$contact_admin_info_preview,
-				$contact_admin_info_uid,
-				$contact_admin_info_bitfield,
-				$contact_admin_info_flags,
-				!$this->request->variable('disable_bbcode', false),
-				!$this->request->variable('disable_magic_url', false),
-				!$this->request->variable('disable_smilies', false)
-			);
+			// The text was prepared for storage above, together with its uid, bitfield and flags
 			$contact_admin_info_preview = generate_text_for_display($contact_admin_info, $contact_admin_info_uid, $contact_admin_info_bitfield, $contact_admin_info_flags);
 		}
 
 		$contact_admin_edit = generate_text_for_edit($contact_admin_info, $contact_admin_info_uid, $contact_admin_info_flags);
 
 		$this->template->assign_vars([
-			'CONTACT_ERROR'					=> (sizeof($error)) ? implode('<br />', $error) : false,
+			'CONTACT_ERROR'					=> (count($error)) ? implode('<br />', $error) : false,
 
 			'CONTACT_CONFIRM'				=> $this->config['contactadmin_confirm'],
 			'CONTACT_CONFIRM_GUESTS'		=> $this->config['contactadmin_confirm_guests'],
 			'CONTACT_ATTACHMENTS'			=> $this->config['allow_attachments'] ? $this->config['contactadmin_attach_allowed'] : $this->config['allow_attachments'],
 			'CONTACT_MAX_ATTEMPTS'			=> $this->config['contactadmin_max_attempts'],
-			'CONTACT_FOUNDER'				=> $this->config['contactadmin_founder_only'],
 			'CONTACT_USERNAME_CHK'			=> $this->config['contactadmin_username_chk'],
 			'CONTACT_EMAIL_CHK'				=> $this->config['contactadmin_email_chk'],
 			'CONTACT_GDPR'					=> $this->config['contactadmin_gdpr'],
 			'CONTACT_REASONS'				=> $contact_admin_reasons,
 			'CONTACT_METHOD'				=> $this->contactadmin->method_select($this->request->variable('contact_method', $this->config['contactadmin_method'])),
 			'CONTACT_WHO'					=> $this->contactadmin->who_select($this->config['contactadmin_who']),
-			'CONTACT_METHOD_EMAIL'			=> json_encode($contact_method_email),
-			'CONTACT_METHOD_PM'				=> json_encode($contact_method_pm),
-			'CONTACT_METHOD_POST'			=> json_encode($contact_method_post),
+			'CONTACT_METHOD_EMAIL'			=> (int) $contact_method_email,
+			'CONTACT_METHOD_PM'				=> (int) $contact_method_pm,
+			'CONTACT_METHOD_POST'			=> (int) $contact_method_post,
 			'CONTACT_BOT_POSTER'			=> $this->contactadmin->poster_select($this->config['contactadmin_bot_poster']),
-			'CONTACT_BOT_FORUM'				=> $this->contactadmin->forum_select($this->config['contactadmin_forum']),
 
 			'CONTACT_BOT_MAX_ID'			=> $bot_max_id,
 			'CONTACT_BOT_USER'				=> $this->request->variable('contact_bot_user', $this->config['contactadmin_bot_user']),
@@ -301,6 +300,16 @@ class admin_controller
 			'U_ACTION'				=> $this->u_action,
 		]);
 
+		foreach ($this->contactadmin->forum_options($this->config['contactadmin_forum']) as $forum_id => $forum)
+		{
+			$this->template->assign_block_vars('contact_forums', [
+				'FORUM_ID'		=> $forum_id,
+				'FORUM_NAME'	=> $forum['padding'] . $forum['forum_name'],
+				'S_SELECTED'	=> !empty($forum['selected']),
+				'S_DISABLED'	=> !empty($forum['disabled']),
+			]);
+		}
+
 		if (!function_exists('display_custom_bbcodes'))
 		{
 			include($this->root_path . 'includes/functions_display.' . $this->php_ext);
@@ -309,20 +318,44 @@ class admin_controller
 		display_custom_bbcodes();
 	}
 
+	/**
+	 * Save the submitted settings
+	 *
+	 * Choices that must be one of a fixed set fall back to their first option
+	 * if anything else is submitted.
+	 *
+	 * @return void
+	 * @access protected
+	 */
 	protected function set_options()
 	{
+		$c = $this->contact_constants;
+
 		$this->config->set('contactadmin_confirm', $this->request->variable('confirm', 0));
 		$this->config->set('contactadmin_confirm_guests', $this->request->variable('confirm_guests', 0));
 		$this->config->set('contactadmin_username_chk', $this->request->variable('username_chk', 0));
 		$this->config->set('contactadmin_email_chk', $this->request->variable('email_chk', 0));
-		$this->config->set('contactadmin_max_attempts', $this->request->variable('max_attempts', 0));
+		$this->config->set('contactadmin_max_attempts', max(0, $this->request->variable('max_attempts', 0)));
 		$this->config->set('contactadmin_attach_allowed', $this->request->variable('attach_allowed', 0));
-		$this->config->set('contactadmin_who', $this->request->variable('contact_who', 0));
-		$this->config->set('contactadmin_method', $this->request->variable('contact_method', 0));
+		$this->config->set('contactadmin_who', $this->allowed_value($this->request->variable('contact_who', 0), [$c['CONTACT_WHO_ALL_ADMINS'], $c['CONTACT_WHO_BOARD_DEFAULT'], $c['CONTACT_WHO_BOARD_FOUNDER']]));
+		$this->config->set('contactadmin_method', $this->allowed_value($this->request->variable('contact_method', 0), [$c['CONTACT_METHOD_EMAIL'], $c['CONTACT_METHOD_POST'], $c['CONTACT_METHOD_PM']]));
 		$this->config->set('contactadmin_bot_user', $this->request->variable('contact_bot_user', 0));
-		$this->config->set('contactadmin_bot_poster', $this->request->variable('contact_bot_poster', 0));
+		$this->config->set('contactadmin_bot_poster', $this->allowed_value($this->request->variable('contact_bot_poster', 0), [$c['CONTACT_POST_NEITHER'], $c['CONTACT_POST_GUEST'], $c['CONTACT_POST_ALL']]));
 		$this->config->set('contactadmin_forum', $this->request->variable('forum', 0));
 		$this->config->set('contactadmin_gdpr', $this->request->variable('gdpr', 0));
+	}
+
+	/**
+	 * Return a submitted value if it is one of the allowed values, otherwise the first allowed value
+	 *
+	 * @param int	$value		submitted value
+	 * @param array	$allowed	allowed values
+	 * @return int
+	 * @access protected
+	 */
+	protected function allowed_value($value, array $allowed)
+	{
+		return in_array($value, $allowed) ? $value : reset($allowed);
 	}
 
 	/**
@@ -333,8 +366,6 @@ class admin_controller
 	*/
 	protected function bot_max_id()
 	{
-		$bot_max_id = '';
-
 		$sql = 'SELECT MAX(user_id) as max_id
 			FROM ' . USERS_TABLE;
 		$result = $this->db->sql_query($sql);
@@ -344,33 +375,18 @@ class admin_controller
 		return (int) $bot_max_id;
 	}
 
-	/*ensure we have admins that accept emails or pms to be sent via the board
+	/**
+	* check_for_admins			ensure the board has at least one administrator to send emails or PMs to
 	*
-	* @param 	int		$method
 	* @return	bool
 	* @access	protected
 	*/
-	protected function check_for_admins($method)
+	protected function check_for_admins()
 	{
 		// Grab an array of user_id's with admin permissions
 		$admin_ary = $this->auth->acl_get_list(false, 'a_', false);
-		$admin_ary = (!empty($admin_ary[0]['a_'])) ? $admin_ary[0]['a_'] : [];
 
-		$admins = [];
-
-		$sql = 'SELECT user_id, username, user_email, user_lang, user_jabber, user_notify_type
-			FROM ' . USERS_TABLE . '
-				WHERE ' . $this->db->sql_in_set('user_id', $admin_ary);
-		$result = $this->db->sql_query($sql);
-		$admins = $this->db->sql_fetchrowset($result);
-		$this->db->sql_freeresult($result);
-
-		if (!count($admins))
-		{
-			return false;
-		}
-
-		return true;
+		return !empty($admin_ary[0]['a_']);
 	}
 
 	/**

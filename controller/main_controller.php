@@ -46,7 +46,7 @@ class main_controller
 	protected $db;
 
 	/** @var dispatcher_interface */
-	protected $dispatcher_interface;
+	protected $dispatcher;
 
 	/** @var language */
 	protected $language;
@@ -54,7 +54,7 @@ class main_controller
 	/** @var log */
 	protected $log;
 
-	/* @var request */
+	/** @var request */
 	protected $request;
 
 	/** @var template */
@@ -63,7 +63,7 @@ class main_controller
 	/** @var user */
 	protected $user;
 
-	/* @var contactadmin */
+	/** @var contactadmin */
 	protected $contactadmin;
 
 	/** @var captcha_factory */
@@ -261,7 +261,7 @@ class main_controller
 			}
 
 			// always check email addresses for validity but only if setting in ACP isn't set and only for non-registered users
-			if (!$this->config['contactadmin_email_check'] && empty($this->user->data['is_registered']))
+			if (!$this->config['contactadmin_email_chk'] && empty($this->user->data['is_registered']))
 			{
 				$validate_email = phpbb_validate_email($data['email']);
 				if ($validate_email)
@@ -306,7 +306,7 @@ class main_controller
 			// Check for Privacy policy check
 			if (empty($this->user->data['is_registered']) && $this->config['contactadmin_gdpr'] && !$this->request->is_set('gdpr'))
 			{
-				$error[] = $this->user->lang('CONTACT_PRIVACYPOLICY_ERROR');
+				$error[] = $this->language->lang('CONTACT_PRIVACYPOLICY_ERROR');
 			}
 
 			// CAPTCHA check
@@ -335,13 +335,16 @@ class main_controller
 				$user_name = $data['username'];
 			}
 
+			// Name shown on a forum post; $data['username'] keeps the sender's name for listeners
+			$poster_name = $data['username'];
+
 			if (!in_array($this->config['contactadmin_method'], [$this->contact_constants['CONTACT_METHOD_EMAIL']]))
 			{
 				// change the users stuff
 				if ($this->config['contactadmin_bot_poster'] == $this->contact_constants['CONTACT_POST_ALL'] || ($this->config['contactadmin_bot_poster'] == $this->contact_constants['CONTACT_POST_GUEST'] && empty($this->user->data['is_registered'])))
 				{
 					$contact_perms = $this->contactadmin->contact_change_auth($this->config['contactadmin_bot_user']);
-					$data['username'] = $this->user->data['username'];
+					$poster_name = $this->user->data['username'];
 				}
 				if (!function_exists('create_thumbnail'))
 				{
@@ -400,7 +403,7 @@ class main_controller
 			extract($this->dispatcher->trigger_event('phpbbmodders.contactadmin.modify_data_and_error', compact($vars)));
 
 			// no errors, let's proceed
-			if (!sizeof($error))
+			if (!count($error))
 			{
 				if ($this->config['contactadmin_method'] != $this->contact_constants['CONTACT_METHOD_POST'])
 				{
@@ -436,13 +439,9 @@ class main_controller
 							'filename_data'		=> $message_parser->filename_data,
 						];
 
-						// Loop through our list of users
-						$size = count($contact_users);
-						for ($i = 0; $i < $size; $i++)
-						{
-							$pm_data['address_list'] = ['u' => [$contact_users[$i]['user_id'] => 'to']];
-							submit_pm('post', $subject, $pm_data, false);
-						}
+						// One PM to all admins, as blind copies so each sees only their own copy
+						$pm_data['address_list'] = ['u' => array_fill_keys(array_map('intval', array_column($contact_users, 'user_id')), 'bcc')];
+						submit_pm('post', $subject, $pm_data, false);
 
 					break;
 
@@ -487,7 +486,7 @@ class main_controller
 						$poll = [];
 
 						// Submit the post!
-						submit_post('post', $subject, $data['username'], POST_NORMAL, $poll, $post_data);
+						submit_post('post', $subject, $poster_name, POST_NORMAL, $poll, $post_data);
 
 					break;
 
@@ -660,7 +659,7 @@ class main_controller
 			'USERNAME'			=> isset($data['username']) ? $data['username'] : '',
 			'EMAIL'				=> isset($data['email']) ? $data['email'] : '',
 			'EMAIL_CONFIRM'		=> isset($data['email_confirm']) ? $data['email_confirm'] : '',
-			'CONTACT_REASONS'	=> $this->contactadmin->contact_make_select($contact_reasons, $data['contact_reason']),
+			'S_CONTACT_REASONS'	=> !empty($contact_reasons),
 			'CONTACT_SUBJECT'	=> isset($data['contact_subject']) ? $data['contact_subject'] : '',
 			'CONTACT_MESSAGE'	=> isset($data['contact_message']) ? $data['contact_message'] : '',
 			'CONTACT_INFO'		=> $l_admin_info,
@@ -678,6 +677,11 @@ class main_controller
 			'S_CONTACT_ACTION'		=> $this->helper->route('phpbbmodders_contactadmin_displayform'),
 			'S_CONTACT_GDPR'		=> ($this->config['contactadmin_gdpr'] && empty($this->user->data['is_registered'])) ? true : false,
 		]);
+
+		foreach ($this->contactadmin->contact_reason_options($contact_reasons, $data['contact_reason']) as $option)
+		{
+			$this->template->assign_block_vars('contact_reasons', $option);
+		}
 
 		// Send all data to the template file
 		return $this->helper->render('contactadmin_body.html', $this->language->lang('ACP_CAT_CONTACTADMIN'));

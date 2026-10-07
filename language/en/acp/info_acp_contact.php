@@ -41,7 +41,6 @@ $lang = array_merge($lang, [
 	'FORUM_EMAIL_INACTIVE'	=> 'How do you want users to be able to make contact.<br><span style="color:red;">No email allowed per forum settings</span>',
 	'NO_FORUM_ATTACHMENTS'		=> 'If set attachments will be allowed in posting to the forum and private messages. The extensions allowed are the same as the board configuration.<br><span style="color:red;">No attachments allowed per forum settings!</span>',
 	// Log entries
-	'LOG_CONFIG_CONTACT_ADMIN'		=> '<strong>Altered Contact Admin extension page settings</strong>',
 	'LOG_CONTACT_BOT_INVALID'		=> '<strong>The Contact Admin extension bot has an invalid user id selected:</strong><br />User ID %1$s',
 	'LOG_CONTACT_FORUM_INVALID'		=> '<strong>The Contact Admin extension forum has an invalid forum selected:</strong><br />Forum ID %1$s',
 	'LOG_CONTACT_EMAIL_INVALID'		=> '<strong>The Contact Admin extension is allowing emails but the forum is not setup to allow emails.  The extension has been disabled.',
