@@ -52,7 +52,10 @@ class ext extends \phpbb\extension\base
 
 		if ($this->container->get('ext.manager')->is_enabled(self::OLD_EXT_NAME))
 		{
-			return ['Disable the old "' . self::OLD_EXT_NAME . '" extension first (keep its data, do not delete it).'];
+			$language = $this->container->get('language');
+			$language->add_lang('install_contactadmin', 'phpbbmodders/contactadmin');
+
+			return $language->lang('CONTACTADMIN_DISABLE_OLD', self::OLD_EXT_NAME);
 		}
 
 		return true;
