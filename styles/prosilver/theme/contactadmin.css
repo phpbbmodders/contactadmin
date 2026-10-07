@@ -1,5 +1,4 @@
-{% if S_CONTACT_ADMIN %}
-<style>
+/* Contact Admin contact form */
 .contactpanel {
 	margin-bottom: 4px;
 	padding: 5px 10px;
@@ -9,5 +8,8 @@
 	color:#28313F;
 	text-align: center;
 }
-</style>
-{% endif %}
+
+.contactadmin-message {
+	width: 98%;
+	height: 160px;
+}

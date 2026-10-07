@@ -39,7 +39,7 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, [
 	'ACP_CAT_CONTACTADMIN'		=> 'Contact Admin',
-	'ADD_ATTACHMENT_EXPLAIN'	=> 'If you wish to attach a file enter the details below.',
+	'CONTACT_ADD_ATTACHMENT_EXPLAIN'	=> 'If you wish to attach a file enter the details below.',
 	'CONTACT_ERROR'			=> 'You can’t use the contact form at the moment because there is an error in the configuration.  An email has been sent to the founder.',
 	'CONTACT_NONE'			=> 'The user %1$s tried to use the Contact Admin extension at %2$s to send a %3$s, but there are no Administrators that allow %3$ss by users. Please enter the Contact Admin Configuration in the Admin Extension Panel for the board %4$s and choose a different method for contact',
 	'CONTACT_BOT_SUBJECT'		=> 'Contact Admin Extension Error',
@@ -52,7 +52,6 @@ $lang = array_merge($lang, [
 	'CONTACT_NO_SUBJ'			=> 'You didn’t enter a subject',
 	'CONTACT_REASON'			=> 'Reason',
 	'CONTACT_TEMPLATE'			=> '[b]Name:[/b] %1$s' . "\n" . '[b]Email Address:[/b] %2$s' . "\n" . '[b]IP:[/b] %3$s' . "\n" . '[b]Subject:[/b] %4$s' . "\n" . '[b]Has entered the following message into the contact form:[/b] %5$s',
-	'CONTACT_TITLE'				=> 'Contact Administration',
 
 	'CONTACT_YOUR_NAME'			=> 'Your name',
 	'CONTACT_YOUR_NAME_EXPLAIN'	=> 'Please enter your name, so the message has an identity.',
@@ -63,14 +62,13 @@ $lang = array_merge($lang, [
 
 	'TOO_MANY_CONTACT_TRIES'	=> 'You have exceeded the maximum number of attempts for this session. Please try again later.',
 	'CONTACT_NO_NAME'			=> 'You didn’t enter a name',
-	'FORUM'						=> 'forum',
+	'CONTACT_FORUM'						=> 'forum',
 	'USER'						=> 'user',
 	'CONTACT_REGISTERED'		=> 'Registered User',
 	'CONTACT_GUEST'				=> 'Guest User',
 
 	'REASON_EXPLAIN'			=> 'Please choose a reason',
 	'REASON_ERROR'				=> 'Please choose an appropriate reason',
-	'RETURN_CONTACT'			=> '%sReturn to the contact page%s',
 	'CONTACT_PRIVACYPOLICY'				=> 'Privacy policy',
 	'CONTACT_PRIVACYPOLICY_EXPLAIN'		=> 'I confirm that the given name, e-mail address, message text and my IP address will be processed and stored by the owner of the board according to the <a target="_blank" title="Privacy policy link" href="%s">Privacy Policy</a>',
 	'CONTACT_PRIVACYPOLICY_ERROR'		=> 'Please check the privacy policy box. Without your confirmation you won’t able to send us a message.',

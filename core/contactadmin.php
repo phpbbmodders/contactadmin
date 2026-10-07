@@ -21,6 +21,9 @@ use phpbb\user;
 use phpbb\exception\http_exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+* Shared helpers for the contact form and its ACP settings
+*/
 class contactadmin
 {
 	/** @var auth */
@@ -181,7 +184,7 @@ class contactadmin
 
 					// send an email to the board default
 					$email_template = '@phpbbmodders_contactadmin/contact_error';
-					$email_message = $this->language->lang('CONTACT_BOT_MESSAGE', $this->user->data['username'], $this->config['sitename'], $this->language->lang('FORUM'), $server_url);
+					$email_message = $this->language->lang('CONTACT_BOT_MESSAGE', $this->user->data['username'], $this->config['sitename'], $this->language->lang('CONTACT_FORUM'), $server_url);
 					$this->contact_send_email($email_template, $email_message);
 
 					// add an entry into the error log
@@ -269,7 +272,7 @@ class contactadmin
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_NONE',  time(), [$error]);
 
 					// show a message to the user
-					$message = $this->language->lang('CONTACT_ERROR', '<br /><br />' . $this->language->lang('RETURN_INDEX', '<a href="' . append_sid("{$this->root_path}index.$this->php_ext") . '">', '</a>'));
+					$message = $this->language->lang('CONTACT_ERROR') . '<br /><br />' . $this->language->lang('RETURN_INDEX', '<a href="' . append_sid("{$this->root_path}index.$this->php_ext") . '">', '</a>');
 
 					throw new http_exception(503, $message);
 				}
@@ -314,8 +317,8 @@ class contactadmin
 		$messenger->headers('X-AntiAbuse: User IP - ' . $this->user->ip);
 
 		$messenger->template($email_template, $lang);
+		// No from() call: the messenger sends from the board email address by default
 		$messenger->to($this->config['board_email']);
-		$messenger->from($this->config['server_name']);
 
 		$messenger->assign_vars([
 			'SUBJECT'		=> $this->language->lang('CONTACT_BOT_SUBJECT'),
@@ -329,38 +332,41 @@ class contactadmin
 	}
 
 	/**
-	 * contact_make_select
+	 * contact_reason_options
 	 *
 	 * @param array 	$input_ary	an array of contact reasons
 	 * @param string	$selected	the chosen reason
-	 * @return string 				Select html
-	 * for drop down reasons in the contact page
+	 * @return array 				Options for the reasons drop down, empty if there are no reasons
 	 */
-	public function contact_make_select($input_ary, $selected)
+	public function contact_reason_options($input_ary, $selected)
 	{
 		// only accept arrays, no empty ones
 		if (!is_array($input_ary) || !count($input_ary))
 		{
-			return false;
+			return [];
 		}
 
 		// add a default entry asking for user to choose a reason
-		$default_reason[] = $this->language->lang('REASON_EXPLAIN');
+		$input_ary = array_merge([$this->language->lang('REASON_EXPLAIN')], $input_ary);
 
-		$input_ary = array_merge($default_reason, $input_ary);
-
-		$select = '';
+		$options = [];
 		foreach ($input_ary as $item)
 		{
-			$item_selected = ($item == $selected) ? ' selected="selected"' : '';
-			$select .= '<option value="' . $item . '"' . $item_selected . '>' . $item . '</option>';
+			$options[] = [
+				'VALUE'			=> $item,
+				'S_SELECTED'	=> ($item == $selected),
+			];
 		}
 
-		return $select;
+		return $options;
 	}
 
 	/**
 	 * Create the selection for who gets the message
+	 *
+	 * @param int		$value	the selected option
+	 * @param string	$key	config key passed on to h_radio()
+	 * @return string			Radio buttons html, built by phpBB's h_radio()
 	 */
 	public function who_select($value, $key = '')
 	{
@@ -375,6 +381,10 @@ class contactadmin
 
 	/**
 	 * Create the selection for the contact method
+	 *
+	 * @param int		$value	the selected option
+	 * @param string	$key	config key passed on to h_radio()
+	 * @return string			Radio buttons html, built by phpBB's h_radio()
 	 */
 	public function method_select($value, $key = '')
 	{
@@ -399,6 +409,10 @@ class contactadmin
 
 	/**
 	 * Create the selection for the post method
+	 *
+	 * @param int		$value	the selected option
+	 * @param string	$key	config key passed on to h_radio()
+	 * @return string			Radio buttons html, built by phpBB's h_radio()
 	 */
 	public function poster_select($value, $key = '')
 	{
@@ -412,11 +426,14 @@ class contactadmin
 	}
 
 	/**
-	 * Create the selection for the bot forum
+	 * Get the forums for the bot forum drop down
+	 *
+	 * @param int	$value	the selected forum id
+	 * @return array		Forum data keyed by forum id, from make_forum_select()
 	 */
-	public function forum_select($value)
+	public function forum_options($value)
 	{
-		return '<select id="contact_forum" name="forum">' . make_forum_select($value, false, true, true) . '</select>';
+		return make_forum_select((int) $value, false, true, true, true, false, true);
 	}
 
 	/**
@@ -480,66 +497,81 @@ class contactadmin
 	}
 
 	/**
-	* bot_user_info					used in the ACP when choosing the "bot"
+	* bot_user_info					look up the user chosen as the contact "bot"
 	*
-	* @param user_id				user id
-	* @return array					array of user info or error if not found
+	* @param int	$user_id		user id
+	* @return array					user_id, username and user_type, or an 'error' message if not found
 	* @access public
 	*/
 	public function bot_user_info($user_id)
 	{
-		$bot_user_info = [];
-
 		$sql = 'SELECT user_id, username, user_type
-			FROM ' . USERS_TABLE . "
-			WHERE user_id = " . (int) $user_id;
+			FROM ' . USERS_TABLE . '
+			WHERE user_id = ' . (int) $user_id;
 		$result = $this->db->sql_query($sql);
 		$bot_user_info = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
 
-		if (!isset($bot_user_info['username']))
+		if (!$bot_user_info)
 		{
-			$bot_user_info['error'] = $this->language->lang('CONTACT_NO_BOT_USER');
-		}
-
-		if ($this->request->is_ajax())
-		{
-			if (!isset($bot_user_info['username']))
-			{
-				$json = new JsonResponse([
-					'error'     => 'CONTACT_NO_BOT_USER',
-					'user_link'	=> '',
-				]);
-			}
-			else if ($bot_user_info['user_id'] == ANONYMOUS)
-			{
-				$json = new JsonResponse([
-					'error'     => 'CONTACT_BOT_IS_GUEST',
-					'user_link'	=> $bot_user_info['username'],
-				]);
-			}
-			else if ($bot_user_info['user_type'] == USER_IGNORE)
-			{
-				$json = new JsonResponse([
-					'error'     => 'CONTACT_BOT_IS_BOT',
-					'user_link'	=> $bot_user_info['username'],
-				]);
-			}
-			else
-			{
-				$json = new JsonResponse([
-					'error'			=> false,
-					'user_link'     => '<a href="' . append_sid("{$this->root_path}memberlist.$this->php_ext", 'mode=viewprofile&amp;u=' . $bot_user_info['user_id']) . '" target="_blank">' . $bot_user_info['username'] . '</a>',
-				]);
-			}
-			return $json;
+			$bot_user_info = ['error' => $this->language->lang('CONTACT_NO_BOT_USER')];
 		}
 
 		return $bot_user_info;
 	}
 
-	/*
-	* Get an array that represents directory tree
+	/**
+	* bot_user_info_json			AJAX lookup used by the ACP settings when choosing the "bot"
+	*
+	* Only board administrators may use it: it reveals usernames and account types.
+	*
+	* @param int	$user_id		user id
+	* @return JsonResponse			the user's profile link, plus an error key if the user is unsuitable
+	* @throws http_exception		403 for anyone without the a_board permission
+	* @access public
+	*/
+	public function bot_user_info_json($user_id)
+	{
+		if (!$this->auth->acl_get('a_board'))
+		{
+			throw new http_exception(403, 'NOT_AUTHORISED');
+		}
+
+		$bot_user_info = $this->bot_user_info($user_id);
+
+		if (isset($bot_user_info['error']))
+		{
+			return new JsonResponse([
+				'error'		=> 'CONTACT_NO_BOT_USER',
+				'user_link'	=> '',
+			]);
+		}
+		else if ($bot_user_info['user_id'] == ANONYMOUS)
+		{
+			return new JsonResponse([
+				'error'		=> 'CONTACT_BOT_IS_GUEST',
+				'user_link'	=> $bot_user_info['username'],
+			]);
+		}
+		else if ($bot_user_info['user_type'] == USER_IGNORE)
+		{
+			return new JsonResponse([
+				'error'		=> 'CONTACT_BOT_IS_BOT',
+				'user_link'	=> $bot_user_info['username'],
+			]);
+		}
+
+		return new JsonResponse([
+			'error'		=> false,
+			'user_link'	=> '<a href="' . append_sid("{$this->root_path}memberlist.$this->php_ext", 'mode=viewprofile&amp;u=' . $bot_user_info['user_id']) . '" target="_blank">' . $bot_user_info['username'] . '</a>',
+		]);
+	}
+
+	/**
+	* Get the names of the sub-directories of a directory
+	*
+	* @param string	$directory	path of the directory
+	* @return array				directory names
 	*/
 	public function dir_to_array($directory)
 	{

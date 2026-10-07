@@ -35,7 +35,7 @@ class listener implements EventSubscriberInterface
 	/** @var language */
 	protected $language;
 
-	/* @var template */
+	/** @var template */
 	protected $template;
 
 	/** @var user */
@@ -151,12 +151,9 @@ class listener implements EventSubscriberInterface
 	{
 		if (empty($this->user->data['is_bot']))
 		{
-			$version = phpbb_version_compare($this->config['version'], '3.3', '>=');
-
 			$this->template->assign_vars([
 				'U_CONTACT_US'		=> false,
 				'U_CONTACTADMIN'	=> $this->helper->route('phpbbmodders_contactadmin_displayform'),
-				'S_FORUM_VERSION'	=> $version,
 			]);
 		}
 	}

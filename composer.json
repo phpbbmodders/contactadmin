@@ -1,47 +1,47 @@
 {
-    "name": "phpbbmodders/contactadmin",
-    "type": "phpbb-extension",
-    "description": "A contact form that lets guests and members reach the board administrators by email, private message or forum post.",
-    "homepage": "https://www.phpbbmodders.com/",
-    "version": "1.5.0",
-    "time": "2026-10-06",
-    "keywords": [
-        "phpbb",
-        "extension",
-        "contact admin",
-        "contact-form"
-    ],
-    "license": "GPL-2.0-only",
-    "authors": [
-        {
-            "name": "phpBB Modders",
-            "email": "board@phpbbmodders.com",
-            "homepage": "https://www.phpbbmodders.com/",
-            "role": "Extension Developer"
-        },
-        {
-            "name": "Rich McGirr",
-            "role": "Past Developer"
-        }
-    ],
-    "require": {
-        "php": ">=7.4",
-        "phpbb/phpbb": ">=3.3.19",
-        "composer/installers": "^1.0 || ^2.0"
-    },
-    "require-dev": {
-        "phpbb/epv": "dev-master"
-    },
-    "extra": {
-        "display-name": "Contact Admin",
-        "soft-require": {
-            "phpbb/phpbb": ">=3.3.19,<4.0.0@dev"
-        },
-        "version-check": {
-            "host": "www.phpbb.com",
-            "directory": "/customise/db/extension/contact_admin",
-            "filename": "version_check",
-            "ssl": true
-        }
-    }
+	"name": "phpbbmodders/contactadmin",
+	"type": "phpbb-extension",
+	"description": "A contact form that lets guests and members reach the board administrators by email, private message or forum post.",
+	"homepage": "https://www.phpbbmodders.com/",
+	"version": "1.5.0",
+	"time": "2026-10-06",
+	"keywords": [
+		"phpbb",
+		"extension",
+		"contact admin",
+		"contact-form"
+	],
+	"license": "GPL-2.0-only",
+	"authors": [
+		{
+			"name": "phpBB Modders",
+			"email": "board@phpbbmodders.com",
+			"homepage": "https://www.phpbbmodders.com/",
+			"role": "Extension Developer"
+		},
+		{
+			"name": "Rich McGirr",
+			"role": "Past Developer"
+		}
+	],
+	"require": {
+		"php": ">=7.4",
+		"phpbb/phpbb": ">=3.3.19,<4.0.0@dev",
+		"composer/installers": "^1.0 || ^2.0"
+	},
+	"require-dev": {
+		"phpbb/epv": "dev-master"
+	},
+	"extra": {
+		"display-name": "Contact Admin",
+		"soft-require": {
+			"phpbb/phpbb": ">=3.3.19,<4.0.0@dev"
+		},
+		"version-check": {
+			"host": "www.phpbb.com",
+			"directory": "/customise/db/extension/contact_admin",
+			"filename": "version_check",
+			"ssl": true
+		}
+	}
 }

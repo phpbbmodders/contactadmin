@@ -38,10 +38,8 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
-	'ADMINS_NOT_EXIST_FOR_METHOD'	=> [
-		0 => 'There are no Administrators who allow emails.  You must choose a different method of contact.',
-		2 => 'There are no Administrators who allow private messages. You must choose a different method of contact.',
-	],
+	'ADMINS_NOT_EXIST_EMAIL'		=> 'There are no Administrators who allow emails.  You must choose a different method of contact.',
+	'ADMINS_NOT_EXIST_PM'		=> 'There are no Administrators who allow private messages. You must choose a different method of contact.',
 	'CONTACT_CONFIG_SAVED'			=> 'Contact Admin configuration has been updated',
 	'CONTACT_ACP_CONFIRM'				=> 'Enable visual confirmation',
 	'CONTACT_ACP_CONFIRM_EXPLAIN'		=> 'If you enable this option, users will have to enter a visual confirmation to send the message.<br>This is to prevent spam messages. Note that this option is for the contact page only.  It does not affect other visual confirmation settings',

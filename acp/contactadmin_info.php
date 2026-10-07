@@ -12,7 +12,7 @@ namespace phpbbmodders\contactadmin\acp;
 
 class contactadmin_info
 {
-	function module()
+	public function module()
 	{
 		return [
 			'filename'	=> '\phpbbmodders\contactadmin\acp\contactadmin_module',

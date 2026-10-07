@@ -1,11 +1,5 @@
-{% INCLUDE 'overall_header.html' %}
-<script>
-	var form_name = 'contactadmin';
-	var text_name = 'contact_admin_info';
-	var load_draft = false;
-	var upload = false;
-	var imageTag = false;
-</script>
+{% INCLUDECSS '@phpbbmodders_contactadmin/contactadmin_acp.css' %}
+{% include 'overall_header.html' %}
 <h1>{{ lang('ACP_CAT_CONTACTADMIN') }}</h1>
 {% if CONTACT_ERROR %}
 	<div class="errorbox"><h3>{{ lang('WARNING') }}</h3>
@@ -13,7 +7,7 @@
 	</div>
 {% endif %}
 
-<form id="contactadmin" method="post" action="{{ U_ACTION }}">
+<form id="contactadmin" method="post" action="{{ U_ACTION }}" data-bot-info-url="{{ AJAX_BOT_USER_INFO|e('html_attr') }}" data-lang-no-bot-user="{{ lang('CONTACT_NO_BOT_USER')|striptags|e('html_attr') }}" data-lang-bot-is-bot="{{ lang('CONTACT_BOT_IS_BOT')|striptags|e('html_attr') }}" data-lang-bot-is-guest="{{ lang('CONTACT_BOT_IS_GUEST')|striptags|e('html_attr') }}" data-method-email="{{ CONTACT_METHOD_EMAIL }}" data-method-pm="{{ CONTACT_METHOD_PM }}" data-method-post="{{ CONTACT_METHOD_POST }}">
 	<fieldset>
 		<legend>{{ lang('CONTACT_US_INFO') }}</legend>
 		<p>{{ lang('CONTACT_US_INFO_EXPLAIN') }}</p>
@@ -25,14 +19,14 @@
 		{% endif %}
 		{% INCLUDE 'acp_posting_buttons.html' %}
 		<dl class="responsive-columns">
-			<dt style="width: 90px;" id="color_palette_placeholder" data-orientation="v" data-height="12" data-width="15" data-bbcode="true">
+			<dt class="contactadmin-palette" id="color_palette_placeholder" data-orientation="v" data-height="12" data-width="15" data-bbcode="true">
 			</dt>
 
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px;">
-				<textarea name="contact_admin_info" rows="10" cols="60" style="width: 95%;" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();" data-bbcode="true">{{ CONTACT_INFO }}</textarea>
+			<dd class="contactadmin-editor-row">
+				<textarea name="contact_admin_info" rows="10" cols="60" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();" data-bbcode="true">{{ CONTACT_INFO }}</textarea>
 			</dd>
 
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px; margin-top: 5px;">
+			<dd class="contactadmin-editor-row contactadmin-editor-options">
 				{% if S_BBCODE_ALLOWED %}
 				<label><input type="checkbox" class="radio" name="disable_bbcode"{% if S_BBCODE_DISABLE_CHECKED %} checked="checked"{% endif %} /> {{ lang('DISABLE_BBCODE') }}</label>
 				{% endif %}
@@ -43,10 +37,10 @@
 				<label><input type="checkbox" class="radio" name="disable_magic_url"{% if S_MAGIC_URL_DISABLE_CHECKED %} checked="checked"{% endif %} /> {{ lang('DISABLE_MAGIC_URL') }}</label>
 				{% endif %}
 			</dd>
-			<dd style="margin-{{ S_CONTENT_FLOW_BEGIN }}: 90px; margin-top: 10px;"><strong>{{ lang('OPTIONS') }}{{ lang('COLON') }} </strong>{{ BBCODE_STATUS }} :: {{ IMG_STATUS }} :: {{ FLASH_STATUS }} :: {{ URL_STATUS }} :: {{ SMILIES_STATUS }}</dd>
+			<dd class="contactadmin-editor-row contactadmin-editor-status"><strong>{{ lang('OPTIONS') }}{{ lang('COLON') }} </strong>{{ BBCODE_STATUS }} :: {{ IMG_STATUS }} :: {{ FLASH_STATUS }} :: {{ URL_STATUS }} :: {{ SMILIES_STATUS }}</dd>
 		</dl>
 		<fieldset class="submit-buttons">
-			<input class="button2" type="submit" name="preview" value="{{ lang('PREVIEW') }}" />
+			<input class="button2" type="submit" name="preview" value="{{ lang('PREVIEW')|e('html_attr') }}" />
 		</fieldset>
 	</fieldset>
 
@@ -124,13 +118,18 @@
 		<dl id="contact-bot-forum">
 			<dt><label for="contact_forum">{{ lang('CONTACT_BOT_FORUM') ~ lang('COLON') }}</label><br>
 			<span>{{ lang('CONTACT_BOT_FORUM_EXPLAIN') }}</span></dt>
-			<dd>{{ CONTACT_BOT_FORUM }}</dd>
+			<dd><select id="contact_forum" name="forum">
+				{% for forum in loops.contact_forums %}
+					<option value="{{ forum.FORUM_ID }}"{% if forum.S_SELECTED %} selected="selected"{% endif %}{% if forum.S_DISABLED %} disabled="disabled" class="disabled-option"{% endif %}>{{ forum.FORUM_NAME }}</option>
+				{% endfor %}
+			</select></dd>
 		</dl>
 	</fieldset>
 
 	<fieldset class="submit-buttons">
-		<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}" />
+		<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT')|e('html_attr') }}" />
 		{{ S_FORM_TOKEN }}
 	</fieldset>
 </form>
-{% INCLUDE 'overall_footer.html' %}
+{% INCLUDEJS '@phpbbmodders_contactadmin/contactadmin_acp.js' %}
+{% include 'overall_footer.html' %}

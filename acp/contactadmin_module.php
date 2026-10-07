@@ -13,9 +13,16 @@ namespace phpbbmodders\contactadmin\acp;
 
 class contactadmin_module
 {
-	public	$u_action;
+	/** @var string Form action URL, set by phpBB's module system */
+	public $u_action;
 
-	function main($id, $mode)
+	/** @var string Template file name */
+	public $tpl_name;
+
+	/** @var string Page title */
+	public $page_title;
+
+	public function main($id, $mode)
 	{
 		global $phpbb_container;
 

@@ -1,0 +1,29 @@
+/* Contact Admin ACP settings */
+.contactadmin-palette {
+	width: 90px;
+}
+
+.contactadmin-editor-row {
+	margin-left: 90px;
+}
+
+.rtl .contactadmin-editor-row {
+	margin-left: 0;
+	margin-right: 90px;
+}
+
+.contactadmin-editor-row textarea {
+	width: 95%;
+}
+
+.contactadmin-editor-options {
+	margin-top: 5px;
+}
+
+.contactadmin-editor-status {
+	margin-top: 10px;
+}
+
+.contactadmin-warning {
+	color: #e8590c;
+}
