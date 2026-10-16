@@ -22,3 +22,5 @@ build.xml		export-ignore
 composer.lock	export-ignore
 README.md		export-ignore
 .editorconfig	export-ignore
+docs/images/		export-ignore
+docs/update/		export-ignore

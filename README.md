@@ -14,6 +14,16 @@ A contact form that lets guests and members reach the board administrators by em
 - Settings under **ACP → Extensions → Contact Admin**.
 - Works with [Stop Forum Spam](https://github.com/phpbbmodders/stopforumspam), which can check messages sent through the form.
 
+## Screenshots
+
+<a href="docs/images/screenshots/contactadmin-guest-form.png"><img src="docs/images/screenshots/contactadmin-guest-form.png" width="560" height="398" alt="Guest contact form"></a>
+
+<a href="docs/images/screenshots/contactadmin-acp-settings.png"><img src="docs/images/screenshots/contactadmin-acp-settings.png" width="560" height="750" alt="ACP configuration"></a>
+
+<a href="docs/images/screenshots/contactadmin-member-basic.png"><img src="docs/images/screenshots/contactadmin-member-basic.png" width="560" height="398" alt="Signed-in contact form"></a>
+
+Click an image for the full size. See the [screenshot gallery](docs/images/screenshots/README.md) for captions.
+
 ## Requirements
 
 - phpBB 3.3.19 or later
@@ -51,6 +61,7 @@ Contributions are welcome!
 - A port of the phpBB 3.0 **Contact Board Administration** MOD.
 - Extension by Rich McGirr ([RMcGirr83](https://github.com/rmcgirr83)).
 - Code review, bug fixes, and documentation assisted by [Claude](https://www.anthropic.com/claude).
+- Release documentation and screenshots assisted by [Codex](https://www.anthropic.com/Codex).
 
 ## License
 
