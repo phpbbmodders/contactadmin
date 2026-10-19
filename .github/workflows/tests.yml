@@ -30,11 +30,17 @@ jobs:
                       db: 'none'
                       NOTESTS: 1
                       phpbb: '3.3.x'
-                    # phpBB 4.0 (the master branch) with its minimum PHP
+                      composer: 'composer'
+                      epv: 'dev-master'
+                    # phpBB 4.0 (the master branch) with its minimum PHP. EPV's
+                    # phpBB 4.0 branch, installed with phpBB's own Composer, as
+                    # phpbb-extensions/test-framework does for phpBB 4.0
                     - php: '8.2'
                       db: 'none'
                       NOTESTS: 1
                       phpbb: 'master'
+                      composer: 'php ../composer.phar'
+                      epv: 'dev-epv-phpbb4'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}${{ matrix.phpbb == 'master' && ' - phpBB 4.0' || '' }}
 
@@ -71,7 +77,7 @@ jobs:
 
             - name: Setup EPV
               if: ${{ env.EPV != 0 }}
-              run: composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs
+              run: ${{ matrix.composer }} require phpbb/epv:${{ matrix.epv }} --dev --no-interaction --ignore-platform-reqs
               working-directory: ./phpBB3/phpBB
 
             - name: Run code sniffer
