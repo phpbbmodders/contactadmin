@@ -92,7 +92,7 @@ class contactadmin
 			string $root_path,
 			string $php_ext,
 			array $contact_constants,
-			?service_collection $messenger_methods = null)
+			$messenger_methods = null)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -205,7 +205,7 @@ class contactadmin
 					// add an entry into the error log
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_FORUM_INVALID', time(), [$forum_id]);
 
-					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . $this->config['board_contact'] . '">', '</a>');
+					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . utf8_htmlspecialchars($this->config['board_contact']) . '">', '</a>');
 
 					throw new http_exception(503, $message);
 				}
@@ -245,7 +245,7 @@ class contactadmin
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_BOT_INVALID', time(), [$bot_id]);
 
 					// show a message to the user
-					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . $this->config['board_contact'] . '">', '</a>');
+					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . utf8_htmlspecialchars($this->config['board_contact']) . '">', '</a>');
 
 					throw new http_exception(503, $message);
 				}
@@ -287,7 +287,7 @@ class contactadmin
 					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_NONE', time(), [$error]);
 
 					// show a message to the user
-					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . $this->config['board_contact'] . '">', '</a>');
+					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . utf8_htmlspecialchars($this->config['board_contact']) . '">', '</a>');
 
 					throw new http_exception(503, $message);
 				}

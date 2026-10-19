@@ -6,7 +6,6 @@ env:
     IMAGE_ICC: 1        # Run icc profile sniffer on your images? 1 or 0
     EPV: 1              # Run EPV (Extension Pre Validator) on your code? 1 or 0
     EXECUTABLE_FILES: 1 # Run check for executable files? 1 or 0
-    PHPBB_BRANCH: 3.3.x # The phpBB branch to run tests on
 
 on:
     push:
@@ -26,11 +25,24 @@ jobs:
             matrix:
                # php-versions: ['8.1']
                 include:
+                    # phpBB 3.3 with the extension's minimum PHP
                     - php: '7.4'
                       db: 'none'
                       NOTESTS: 1
+                      phpbb: '3.3.x'
+                      composer: 'composer'
+                      epv: 'dev-master'
+                    # phpBB 4.0 (the master branch) with its minimum PHP. EPV's
+                    # phpBB 4.0 branch, installed with phpBB's own Composer, as
+                    # phpbb-extensions/test-framework does for phpBB 4.0
+                    - php: '8.2'
+                      db: 'none'
+                      NOTESTS: 1
+                      phpbb: 'master'
+                      composer: 'php ../composer.phar'
+                      epv: 'dev-epv-phpbb4'
 
-        name: PHP ${{ matrix.php }} - ${{ matrix.db }}
+        name: PHP ${{ matrix.php }} - ${{ matrix.db }}${{ matrix.phpbb == 'master' && ' - phpBB 4.0' || '' }}
 
         steps:
             - name: Update apt package index
@@ -40,7 +52,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                   repository: phpbb/phpbb
-                  ref: ${{ env.PHPBB_BRANCH }}
+                  ref: ${{ matrix.phpbb }}
                   path: phpBB3
 
             - name: Checkout extension
@@ -65,7 +77,7 @@ jobs:
 
             - name: Setup EPV
               if: ${{ env.EPV != 0 }}
-              run: composer require phpbb/epv:dev-master --dev --no-interaction --ignore-platform-reqs
+              run: ${{ matrix.composer }} require phpbb/epv:${{ matrix.epv }} --dev --no-interaction --ignore-platform-reqs
               working-directory: ./phpBB3/phpBB
 
             - name: Run code sniffer

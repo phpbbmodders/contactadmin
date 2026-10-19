@@ -17,7 +17,7 @@ namespace phpbbmodders\contactadmin\migrations;
 
 class m1_update_data extends \phpbb\db\migration\migration
 {
-	static public function depends_on()
+	public static function depends_on()
 	{
 		return array('\phpbbmodders\contactadmin\migrations\version_100');
 	}

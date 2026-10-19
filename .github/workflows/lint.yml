@@ -1,8 +1,8 @@
 name: Lint
 
 # PHP syntax check on the lowest PHP version this extension supports and the
-# newest one phpBB 3.3 supports. tests.yml covers PHP 8.2 with phpBB's own
-# checks (code sniffer, EPV).
+# newest one phpBB 3.3 supports. tests.yml runs phpBB's own checks (code
+# sniffer, EPV) on phpBB 3.3 with PHP 7.4 and on phpBB 4.0 with PHP 8.2.
 on:
   push:
     branches:
