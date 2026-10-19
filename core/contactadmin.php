@@ -18,6 +18,7 @@ use phpbb\language\language;
 use phpbb\log\log;
 use phpbb\request\request;
 use phpbb\user;
+use phpbb\di\service_collection;
 use phpbb\exception\http_exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -59,6 +60,9 @@ class contactadmin
 	/** @var array contact_constants */
 	protected $contact_constants;
 
+	/** @var service_collection|null phpBB 4.0 messenger methods, null on phpBB 3.3 */
+	protected $messenger_methods;
+
 	/**
 	* Constructor
 	*
@@ -73,6 +77,7 @@ class contactadmin
 	* @param string						$root_path				phpBB root path
 	* @param string						$php_ext				phpEx
 	* @param array						$contact_constants		constants for the extension
+	* @param service_collection|null	$messenger_methods		phpBB 4.0 messenger methods, null on phpBB 3.3
 	* @access public
 	*/
 	public function __construct(
@@ -86,7 +91,8 @@ class contactadmin
 			user $user,
 			string $root_path,
 			string $php_ext,
-			array $contact_constants)
+			array $contact_constants,
+			?service_collection $messenger_methods = null)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
@@ -99,6 +105,7 @@ class contactadmin
 		$this->root_path = $root_path;
 		$this->php_ext = $php_ext;
 		$this->contact_constants = $contact_constants;
+		$this->messenger_methods = $messenger_methods;
 	}
 
 	/**
@@ -303,32 +310,87 @@ class contactadmin
 
 		$lang = (in_array($this->config['default_lang'], $dir_array)) ? $this->config['default_lang'] : 'en';
 
-		if (!class_exists('messenger'))
-		{
-			include($this->root_path . 'includes/functions_messenger.' . $this->php_ext);
-		}
-		// don't use the queue send the email immediately if not sooner
-		$messenger = new \messenger(false);
-
-		// Email headers
-		$messenger->headers('X-AntiAbuse: Board servername - ' . $this->config['server_name']);
-		$messenger->headers('X-AntiAbuse: User_id - ' . $this->user->data['user_id']);
-		$messenger->headers('X-AntiAbuse: Username - ' . $this->user->data['username']);
-		$messenger->headers('X-AntiAbuse: User IP - ' . $this->user->ip);
-
-		$messenger->template($email_template, $lang);
-		// No from() call: the messenger sends from the board email address by default
-		$messenger->to($this->config['board_email']);
-
-		$messenger->assign_vars([
+		// No from address: the messenger sends from the board email address by default
+		$this->send_email($email_template, $lang, ['user_email' => $this->config['board_email']], [
 			'SUBJECT'		=> $this->language->lang('CONTACT_BOT_SUBJECT'),
 			'EMAIL_SIG'  	=> $this->config['board_email_sig'],
 			'MESSAGE'		=> $email_message,
 		]);
 
-		$messenger->send(NOTIFY_EMAIL);
-
 		return;
+	}
+
+	/**
+	 * Send one email immediately, without the queue
+	 *
+	 * phpBB 4.0 replaced the messenger class with the messenger.method.email
+	 * service and removed Jabber, so this uses whichever the board has.
+	 *
+	 * @param string	$template	email template, e.g. '@phpbbmodders_contactadmin/contact'
+	 * @param string	$lang		language of the email template
+	 * @param array		$recipient	user_email, and optionally username, user_jabber and user_notify_type (phpBB 3.3 only)
+	 * @param array		$vars		email template variables
+	 * @param array		$headers	optional 'from' => [address, name], 'reply_to' and 'subject'
+	 * @return void
+	 */
+	public function send_email($template, $lang, array $recipient, array $vars, array $headers = [])
+	{
+		$name = $recipient['username'] ?? '';
+		$from_name = htmlspecialchars_decode($headers['from'][1] ?? '');
+
+		if ($this->messenger_methods !== null)
+		{
+			$email = $this->messenger_methods->offsetGet('messenger.method.email');
+			$email->set_use_queue(false);
+			$email->anti_abuse_headers($this->config, $this->user);
+			$email->template($template, $lang);
+			$email->to($recipient['user_email'], $name);
+
+			if (!empty($headers['from']))
+			{
+				$email->from($headers['from'][0], $from_name);
+			}
+			if (!empty($headers['reply_to']))
+			{
+				$email->reply_to($headers['reply_to']);
+			}
+			if (!empty($headers['subject']))
+			{
+				$email->subject($headers['subject']);
+			}
+
+			$email->assign_vars($vars);
+			$email->send();
+
+			return;
+		}
+
+		if (!class_exists('messenger'))
+		{
+			include($this->root_path . 'includes/functions_messenger.' . $this->php_ext);
+		}
+		// don't use the queue, send the email immediately
+		$messenger = new \messenger(false);
+		$messenger->anti_abuse_headers($this->config, $this->user);
+		$messenger->template($template, $lang);
+		$messenger->to($recipient['user_email'], $name);
+		$messenger->im($recipient['user_jabber'] ?? '', $name);
+
+		if (!empty($headers['from']))
+		{
+			$messenger->from((($from_name !== '') ? '"' . mail_encode($from_name) . '" ' : '') . '<' . $headers['from'][0] . '>');
+		}
+		if (!empty($headers['reply_to']))
+		{
+			$messenger->replyto($headers['reply_to']);
+		}
+		if (!empty($headers['subject']))
+		{
+			$messenger->subject($headers['subject']);
+		}
+
+		$messenger->assign_vars($vars);
+		$messenger->send($recipient['user_notify_type'] ?? NOTIFY_EMAIL);
 	}
 
 	/**
@@ -472,7 +534,6 @@ class contactadmin
 			$contact_users[] = [
 				'username'		=> !empty($this->config['board_contact_name']) ? $this->config['board_contact_name'] : $this->config['sitename'],
 				'user_email'	=> $this->config['board_contact'],
-				'user_jabber'	=> '',
 				'user_lang'		=> $this->config['default_lang'],
 				'user_notify_type'	=> 0,
 				'user_dateformat'	=> $this->config['default_dateformat'],
@@ -499,7 +560,8 @@ class contactadmin
 
 		if (!empty($sql_where))
 		{
-			$sql = 'SELECT user_id, username, user_email, user_lang, user_jabber, user_notify_type, user_dateformat, user_timezone
+			// phpBB 4.0 removed Jabber, and with it the user_jabber and user_notify_type columns
+			$sql = 'SELECT user_id, username, user_email, user_lang, ' . (($this->messenger_methods === null) ? 'user_jabber, user_notify_type, ' : '') . 'user_dateformat, user_timezone
 				FROM ' . USERS_TABLE . ' ' .
 				$sql_where;
 			$result = $this->db->sql_query($sql);

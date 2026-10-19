@@ -65,3 +65,4 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
             - '%contact_constants%'
+            - '@?messenger.method_collection'
