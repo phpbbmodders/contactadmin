@@ -92,7 +92,7 @@ class contactadmin
 			string $root_path,
 			string $php_ext,
 			array $contact_constants,
-			?service_collection $messenger_methods = null)
+			$messenger_methods = null)
 	{
 		$this->auth = $auth;
 		$this->cache = $cache;
