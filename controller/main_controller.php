@@ -23,6 +23,8 @@ use phpbb\template\template;
 use phpbb\user;
 use phpbbmodders\contactadmin\core\contactadmin as contactadmin;
 use phpbb\captcha\factory as captcha_factory;
+use phpbb\captcha\plugins\confirm_type;
+use phpbb\captcha\plugins\plugin_interface;
 use phpbb\exception\http_exception;
 
 /**
@@ -210,7 +212,16 @@ class main_controller
 		if ($this->config['contactadmin_confirm'])
 		{
 			$captcha = $this->captcha_factory->get_instance($this->config['captcha_plugin']);
-			$captcha->init($this->contact_constants['CONFIRM_CONTACT']);
+
+			// phpBB 4.0 captchas take a confirm_type, 3.3 captchas the matching number
+			if ($captcha instanceof plugin_interface)
+			{
+				$captcha->init(confirm_type::from($this->contact_constants['CONFIRM_CONTACT']));
+			}
+			else
+			{
+				$captcha->init($this->contact_constants['CONFIRM_CONTACT']);
+			}
 		}
 
 		if ($this->request->is_set_post('submit'))
@@ -312,10 +323,21 @@ class main_controller
 			// CAPTCHA check
 			if ($this->config['contactadmin_confirm'] && !$captcha->is_solved())
 			{
-				$vc_response = $captcha->validate($data);
-				if ($vc_response !== false)
+				// phpBB 4.0 captchas return true or false, 3.3 captchas an error message or false
+				if ($captcha instanceof plugin_interface)
 				{
-					$error[] = $vc_response;
+					if (!$captcha->validate())
+					{
+						$error[] = $captcha->get_error();
+					}
+				}
+				else
+				{
+					$vc_response = $captcha->validate($data);
+					if ($vc_response !== false)
+					{
+						$error[] = $vc_response;
+					}
 				}
 
 				if ($this->config['contactadmin_max_attempts'] && $captcha->get_attempt_count() > $this->config['contactadmin_max_attempts'])
