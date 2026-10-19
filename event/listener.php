@@ -72,7 +72,7 @@ class listener implements EventSubscriberInterface
 	* @static
 	* @access public
 	*/
-	static public function getSubscribedEvents()
+	public static function getSubscribedEvents()
 	{
 		return [
 			'core.acp_extensions_run_action_before'	=> 'enable_default_contact',
@@ -118,7 +118,8 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	* ignore ban check
+	* Let users reach the contact page while the board is disabled, and keep
+	* phpBB's own contact page turned off while this extension is enabled
 	*
 	* @param object $event The event object
 	* @return null

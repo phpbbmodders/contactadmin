@@ -21,7 +21,7 @@
 
 		{% if not S_USER_LOGGED_IN %}
 		<dl>
-			<dt><label for="username">{{ lang('CONTACT_YOUR_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ lang('CONTACT_YOUR_NAME_EXPLAIN') }}</span></dt>
+			<dt><label for="username">{{ lang('CONTACT_YOUR_NAME') }}{{ lang('COLON') }}</label><br /><span>{{ L_CONTACT_YOUR_NAME_EXPLAIN }}</span></dt>
 			<dd><input type="text" class="inputbox autowidth" name="username" id="username" value="{{ USERNAME }}" size="30" tabindex="1" /></dd>
 		</dl>
 		<dl>
@@ -61,7 +61,7 @@
 {% if S_CONTACT_GDPR %}
 <div class="panel bg1">
 	<div class="inner">
-		<fieldset class="fields2" id="gdpr">
+		<fieldset class="fields2" id="gdpr-panel">
 			<dl>
 				<dt><label for="gdpr">{{ lang('CONTACT_PRIVACYPOLICY') }}{{ lang('COLON') }}</label></dt>
 				<dd>

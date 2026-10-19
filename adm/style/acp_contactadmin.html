@@ -88,7 +88,7 @@
 		</dl>
 		<dl>
 			<dt><label for="contact_method">{{ lang('CONTACT_METHOD') ~ lang('COLON') }}</label><br>
-			<span>{{ lang('CONTACT_METHOD_EXPLAIN') }}</span></dt>
+			<span>{{ L_CONTACT_METHOD_EXPLAIN }}</span></dt>
 			<dd>{% for option in loops.contact_method %}<label><input type="radio" class="radio" name="contact_method" value="{{ option.VALUE }}"{% if loop.first %} id="contact_method"{% endif %}{% if option.S_CHECKED %} checked="checked"{% endif %} /> {{ option.LABEL }}</label>{% endfor %}</dd>
 		</dl>
 		<dl class="contact-who">
@@ -101,7 +101,7 @@
 		<legend>{{ lang('CONTACT_POST_OPTIONS') }}</legend>
 		<dl>
 			<dt><label for="attach_allowed">{{ lang('CONTACT_ATTACHMENTS') ~ lang('COLON') }}</label><br>
-			<span>{{ lang('CONTACT_ATTACHMENTS_EXPLAIN') }}</span></dt>
+			<span>{{ L_CONTACT_ATTACHMENTS_EXPLAIN }}</span></dt>
 			<dd><label><input type="radio" class="radio" name="attach_allowed" value="1" {% if CONTACT_ATTACHMENTS %}id="attach_allowed" checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 			<label><input type="radio" class="radio" name="attach_allowed" value="0" {% if not CONTACT_ATTACHMENTS %}id="attach_allowed" checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
 		</dl>

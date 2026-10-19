@@ -20,7 +20,7 @@
 
 		{% if not S_USER_LOGGED_IN %}
 		<dl class="row gx-0 mb-1">
-			<dt class="col-md-2 mb-1"><label for="username">{{ lang('CONTACT_YOUR_NAME') }}{{ lang('COLON') }}</label><br /><small class="fw-normal">{{ lang('CONTACT_YOUR_NAME_EXPLAIN') }}</small></dt>
+			<dt class="col-md-2 mb-1"><label for="username">{{ lang('CONTACT_YOUR_NAME') }}{{ lang('COLON') }}</label><br /><small class="fw-normal">{{ L_CONTACT_YOUR_NAME_EXPLAIN }}</small></dt>
 			<dd class="col-md-auto mb-1"><input type="text" class="inputbox autowidth form-control form-control-sm" name="username" id="username" value="{{ USERNAME }}" size="30" tabindex="1" /></dd>
 		</dl>
 		<dl class="row gx-0 mb-1">
@@ -60,7 +60,7 @@
 {% if S_CONTACT_GDPR %}
 <div class="panel bg1 bg-secondary bg-opacity-10 rounded-3 p-2 mb-1">
 	<div class="inner">
-		<fieldset class="fields2" id="gdpr">
+		<fieldset class="fields2" id="gdpr-panel">
 			<dl class="row gx-0 mb-1">
 				<dt class="col-md-2 mb-1"><label for="gdpr">{{ lang('CONTACT_PRIVACYPOLICY') }}{{ lang('COLON') }}</label></dt>
 				<dd class="col-md-10 mb-1">

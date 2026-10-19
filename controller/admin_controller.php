@@ -185,7 +185,7 @@ class admin_controller
 		}
 
 		$error = [];
-		if ($this->request->is_set_post('submit')  || $this->request->is_set_post('preview'))
+		if ($this->request->is_set_post('submit') || $this->request->is_set_post('preview'))
 		{
 			if (!check_form_key('contactadmin_settings'))
 			{
@@ -268,7 +268,7 @@ class admin_controller
 			'CONTACT_METHOD_POST'			=> (int) $contact_method_post,
 
 			'CONTACT_BOT_MAX_ID'			=> $bot_max_id,
-			'CONTACT_BOT_USER'				=> $this->request->variable('contact_bot_user', $this->config['contactadmin_bot_user']),
+			'CONTACT_BOT_USER'				=> $this->request->variable('contact_bot_user', (int) $this->config['contactadmin_bot_user']),
 			'CONTACT_BOT_USER_LINK'			=> $user_link,
 
 			'CONTACT_INFO'					=> $contact_admin_edit['text'],
@@ -298,7 +298,7 @@ class admin_controller
 		]);
 
 		$radio_options = [
-			'contact_method'		=> $this->contactadmin->method_select($this->request->variable('contact_method', $this->config['contactadmin_method'])),
+			'contact_method'		=> $this->contactadmin->method_select($this->request->variable('contact_method', (int) $this->config['contactadmin_method'])),
 			'contact_who'			=> $this->contactadmin->who_select($this->config['contactadmin_who']),
 			'contact_bot_poster'	=> $this->contactadmin->poster_select($this->config['contactadmin_bot_poster']),
 		];
@@ -339,7 +339,7 @@ class admin_controller
 	 */
 	protected function set_options()
 	{
-		$c = $this->contact_constants;
+		$constants = $this->contact_constants;
 
 		$this->config->set('contactadmin_confirm', $this->request->variable('confirm', 0));
 		$this->config->set('contactadmin_confirm_guests', $this->request->variable('confirm_guests', 0));
@@ -347,10 +347,10 @@ class admin_controller
 		$this->config->set('contactadmin_email_chk', $this->request->variable('email_chk', 0));
 		$this->config->set('contactadmin_max_attempts', max(0, $this->request->variable('max_attempts', 0)));
 		$this->config->set('contactadmin_attach_allowed', $this->request->variable('attach_allowed', 0));
-		$this->config->set('contactadmin_who', $this->allowed_value($this->request->variable('contact_who', 0), [$c['CONTACT_WHO_ALL_ADMINS'], $c['CONTACT_WHO_BOARD_DEFAULT'], $c['CONTACT_WHO_BOARD_FOUNDER']]));
-		$this->config->set('contactadmin_method', $this->allowed_value($this->request->variable('contact_method', 0), [$c['CONTACT_METHOD_EMAIL'], $c['CONTACT_METHOD_POST'], $c['CONTACT_METHOD_PM']]));
+		$this->config->set('contactadmin_who', $this->allowed_value($this->request->variable('contact_who', 0), [$constants['CONTACT_WHO_ALL_ADMINS'], $constants['CONTACT_WHO_BOARD_DEFAULT'], $constants['CONTACT_WHO_BOARD_FOUNDER']]));
+		$this->config->set('contactadmin_method', $this->allowed_value($this->request->variable('contact_method', 0), [$constants['CONTACT_METHOD_EMAIL'], $constants['CONTACT_METHOD_POST'], $constants['CONTACT_METHOD_PM']]));
 		$this->config->set('contactadmin_bot_user', $this->request->variable('contact_bot_user', 0));
-		$this->config->set('contactadmin_bot_poster', $this->allowed_value($this->request->variable('contact_bot_poster', 0), [$c['CONTACT_POST_NEITHER'], $c['CONTACT_POST_GUEST'], $c['CONTACT_POST_ALL']]));
+		$this->config->set('contactadmin_bot_poster', $this->allowed_value($this->request->variable('contact_bot_poster', 0), [$constants['CONTACT_POST_NEITHER'], $constants['CONTACT_POST_GUEST'], $constants['CONTACT_POST_ALL']]));
 		$this->config->set('contactadmin_forum', $this->request->variable('forum', 0));
 		$this->config->set('contactadmin_gdpr', $this->request->variable('gdpr', 0));
 	}
