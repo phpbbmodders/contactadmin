@@ -23,6 +23,8 @@ use phpbb\template\template;
 use phpbb\user;
 use phpbbmodders\contactadmin\core\contactadmin as contactadmin;
 use phpbb\captcha\factory as captcha_factory;
+use phpbb\captcha\plugins\confirm_type;
+use phpbb\captcha\plugins\plugin_interface;
 use phpbb\exception\http_exception;
 
 /**
@@ -210,7 +212,16 @@ class main_controller
 		if ($this->config['contactadmin_confirm'])
 		{
 			$captcha = $this->captcha_factory->get_instance($this->config['captcha_plugin']);
-			$captcha->init($this->contact_constants['CONFIRM_CONTACT']);
+
+			// phpBB 4.0 captchas take a confirm_type, 3.3 captchas the matching number
+			if ($captcha instanceof plugin_interface)
+			{
+				$captcha->init(confirm_type::from($this->contact_constants['CONFIRM_CONTACT']));
+			}
+			else
+			{
+				$captcha->init($this->contact_constants['CONFIRM_CONTACT']);
+			}
 		}
 
 		if ($this->request->is_set_post('submit'))
@@ -312,10 +323,21 @@ class main_controller
 			// CAPTCHA check
 			if ($this->config['contactadmin_confirm'] && !$captcha->is_solved())
 			{
-				$vc_response = $captcha->validate($data);
-				if ($vc_response !== false)
+				// phpBB 4.0 captchas return true or false, 3.3 captchas an error message or false
+				if ($captcha instanceof plugin_interface)
 				{
-					$error[] = $vc_response;
+					if (!$captcha->validate())
+					{
+						$error[] = $captcha->get_error();
+					}
+				}
+				else
+				{
+					$vc_response = $captcha->validate($data);
+					if ($vc_response !== false)
+					{
+						$error[] = $vc_response;
+					}
 				}
 
 				if ($this->config['contactadmin_max_attempts'] && $captcha->get_attempt_count() > $this->config['contactadmin_max_attempts'])
@@ -499,23 +521,6 @@ class main_controller
 						$message = preg_replace($bbcode_remove, '', $message);
 						$message = htmlspecialchars_decode($message);
 
-						if (!class_exists('messenger'))
-						{
-							include($this->root_path . 'includes/functions_messenger.' . $this->php_ext);
-						}
-						// Some of the code borrowed from includes/ucp/ucp_register.php
-						// The first argument of messenger::messenger() decides if it uses the message queue (which we will not)
-						$messenger = new \messenger(false);
-
-						// Email headers
-						$messenger->headers('X-AntiAbuse: Board servername - ' . $this->config['server_name']);
-						$messenger->headers('X-AntiAbuse: User_id - ' . $this->user->data['user_id']);
-						$messenger->headers('X-AntiAbuse: Username - ' . $this->user->data['username']);
-						$messenger->headers('X-AntiAbuse: User IP - ' . $this->user->ip);
-
-						$contact_name = htmlspecialchars_decode($this->config['board_contact_name']);
-						$board_contact = (($contact_name !== '') ? '"' . mail_encode($contact_name) . '" ' : '') . '<' . $this->config['board_contact'] . '>';
-
 						// build an array of all lang directories for the extension and check to make sure we have the lang available that is being chosen
 						// if the lang isn't present then errors will present themselves due to no email template found
 						$dir_array = $this->contactadmin->dir_to_array($this->root_path .'ext/phpbbmodders/contactadmin/language');
@@ -550,15 +555,7 @@ class main_controller
 							// now check if the email template may exist.  Can't be helped if there is a lang dir and no email dir
 							// use en if not exist
 							$contact_users[$i]['user_lang'] =  (in_array($contact_users[$i]['user_lang'], $dir_array)) ? $contact_users[$i]['user_lang'] : 'en';
-							$messenger->template('@phpbbmodders_contactadmin/contact', $contact_users[$i]['user_lang']);
-
-							$messenger->to($contact_users[$i]['user_email'], $contact_users[$i]['username']);
-							$messenger->im($contact_users[$i]['user_jabber'], $contact_users[$i]['username']);
-							$messenger->from($board_contact);
-							$messenger->replyto($data['email']);
-							$messenger->subject($subject);
-
-							$messenger->assign_vars([
+							$this->contactadmin->send_email('@phpbbmodders_contactadmin/contact', $contact_users[$i]['user_lang'], $contact_users[$i], [
 								'ADM_USERNAME'	=> htmlspecialchars_decode($contact_users[$i]['username']),
 								'SITENAME'		=> htmlspecialchars_decode($this->config['sitename']),
 								'USER_IP'		=> $this->user->ip,
@@ -568,13 +565,12 @@ class main_controller
 
 								'SUBJECT'		=> $subject,
 								'MESSAGE'		=> $message,
+							], [
+								'from'		=> [$this->config['board_contact'], $this->config['board_contact_name']],
+								'reply_to'	=> $data['email'],
+								'subject'	=> $subject,
 							]);
-
-							$messenger->send($contact_users[$i]['user_notify_type']);
 						}
-
-						// Save emails in the queue to prevent timeouts
-						$messenger->save_queue();
 
 					break;
 				}
