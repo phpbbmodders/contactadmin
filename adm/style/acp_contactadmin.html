@@ -87,14 +87,14 @@
 			<dd><textarea id="contact_reasons" name="reasons" rows="10" cols="40">{{ CONTACT_REASONS }}</textarea></dd>
 		</dl>
 		<dl>
-			<dt><label>{{ lang('CONTACT_METHOD') ~ lang('COLON') }}</label><br>
+			<dt><label for="contact_method">{{ lang('CONTACT_METHOD') ~ lang('COLON') }}</label><br>
 			<span>{{ lang('CONTACT_METHOD_EXPLAIN') }}</span></dt>
-			<dd>{{ CONTACT_METHOD }}</dd>
+			<dd>{% for option in loops.contact_method %}<label><input type="radio" class="radio" name="contact_method" value="{{ option.VALUE }}"{% if loop.first %} id="contact_method"{% endif %}{% if option.S_CHECKED %} checked="checked"{% endif %} /> {{ option.LABEL }}</label>{% endfor %}</dd>
 		</dl>
 		<dl class="contact-who">
-			<dt><label>{{ lang('CONTACT_WHO') ~ lang('COLON') }}</label><br>
+			<dt><label for="contact_who">{{ lang('CONTACT_WHO') ~ lang('COLON') }}</label><br>
 			<span>{{ lang('CONTACT_WHO_EXPLAIN') }}</span></dt>
-			<dd>{{ CONTACT_WHO }}</dd>
+			<dd>{% for option in loops.contact_who %}<label><input type="radio" class="radio" name="contact_who" value="{{ option.VALUE }}"{% if loop.first %} id="contact_who"{% endif %}{% if option.S_CHECKED %} checked="checked"{% endif %} /> {{ option.LABEL }}</label>{% endfor %}</dd>
 		</dl>
 	</fieldset>
 	<fieldset class="contact-options">
@@ -111,9 +111,9 @@
 			<dd><input id="contact_bot_user" name="contact_bot_user" type="number" min="1" max="{{ CONTACT_BOT_MAX_ID }}" value="{{ CONTACT_BOT_USER }}"> <span id="bot_user_link">{{ CONTACT_BOT_USER_LINK }}</span></dd>
 		</dl>
 		<dl id="contact-bot-poster">
-			<dt><label>{{ lang('CONTACT_BOT_POSTER') ~ lang('COLON') }}</label><br>
+			<dt><label for="contact_bot_poster">{{ lang('CONTACT_BOT_POSTER') ~ lang('COLON') }}</label><br>
 			<span>{{ lang('CONTACT_BOT_POSTER_EXPLAIN') }}</span></dt>
-			<dd>{{ CONTACT_BOT_POSTER }}</dd>
+			<dd>{% for option in loops.contact_bot_poster %}<label><input type="radio" class="radio" name="contact_bot_poster" value="{{ option.VALUE }}"{% if loop.first %} id="contact_bot_poster"{% endif %}{% if option.S_CHECKED %} checked="checked"{% endif %} /> {{ option.LABEL }}</label>{% endfor %}</dd>
 		</dl>
 		<dl id="contact-bot-forum">
 			<dt><label for="contact_forum">{{ lang('CONTACT_BOT_FORUM') ~ lang('COLON') }}</label><br>

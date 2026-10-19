@@ -263,12 +263,9 @@ class admin_controller
 			'CONTACT_EMAIL_CHK'				=> $this->config['contactadmin_email_chk'],
 			'CONTACT_GDPR'					=> $this->config['contactadmin_gdpr'],
 			'CONTACT_REASONS'				=> $contact_admin_reasons,
-			'CONTACT_METHOD'				=> $this->contactadmin->method_select($this->request->variable('contact_method', $this->config['contactadmin_method'])),
-			'CONTACT_WHO'					=> $this->contactadmin->who_select($this->config['contactadmin_who']),
 			'CONTACT_METHOD_EMAIL'			=> (int) $contact_method_email,
 			'CONTACT_METHOD_PM'				=> (int) $contact_method_pm,
 			'CONTACT_METHOD_POST'			=> (int) $contact_method_post,
-			'CONTACT_BOT_POSTER'			=> $this->contactadmin->poster_select($this->config['contactadmin_bot_poster']),
 
 			'CONTACT_BOT_MAX_ID'			=> $bot_max_id,
 			'CONTACT_BOT_USER'				=> $this->request->variable('contact_bot_user', $this->config['contactadmin_bot_user']),
@@ -299,6 +296,19 @@ class admin_controller
 
 			'U_ACTION'				=> $this->u_action,
 		]);
+
+		$radio_options = [
+			'contact_method'		=> $this->contactadmin->method_select($this->request->variable('contact_method', $this->config['contactadmin_method'])),
+			'contact_who'			=> $this->contactadmin->who_select($this->config['contactadmin_who']),
+			'contact_bot_poster'	=> $this->contactadmin->poster_select($this->config['contactadmin_bot_poster']),
+		];
+		foreach ($radio_options as $block_name => $options)
+		{
+			foreach ($options as $option)
+			{
+				$this->template->assign_block_vars($block_name, $option);
+			}
+		}
 
 		foreach ($this->contactadmin->forum_options($this->config['contactadmin_forum']) as $forum_id => $forum)
 		{

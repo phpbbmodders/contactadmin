@@ -364,11 +364,10 @@ class contactadmin
 	/**
 	 * Create the selection for who gets the message
 	 *
-	 * @param int		$value	the selected option
-	 * @param string	$key	config key passed on to h_radio()
-	 * @return string			Radio buttons html, built by phpBB's h_radio()
+	 * @param int	$value	the selected option
+	 * @return array		Radio button options, see radio_options()
 	 */
-	public function who_select($value, $key = '')
+	public function who_select($value)
 	{
 		$radio_ary = [
 			$this->contact_constants['CONTACT_WHO_ALL_ADMINS']		=> 'CONTACT_WHO_ALL_ADMINS',
@@ -376,17 +375,16 @@ class contactadmin
 			$this->contact_constants['CONTACT_WHO_BOARD_FOUNDER']		=> 'CONTACT_WHO_BOARD_FOUNDER',
 		];
 
-		return h_radio('contact_who', $radio_ary, $value, $key);
+		return $this->radio_options($radio_ary, $value);
 	}
 
 	/**
 	 * Create the selection for the contact method
 	 *
-	 * @param int		$value	the selected option
-	 * @param string	$key	config key passed on to h_radio()
-	 * @return string			Radio buttons html, built by phpBB's h_radio()
+	 * @param int	$value	the selected option
+	 * @return array		Radio button options, see radio_options()
 	 */
-	public function method_select($value, $key = '')
+	public function method_select($value)
 	{
 		if ($this->config['email_enable'])
 		{
@@ -404,17 +402,16 @@ class contactadmin
 			];
 		}
 
-		return h_radio('contact_method', $radio_ary, $value, $key);
+		return $this->radio_options($radio_ary, $value);
 	}
 
 	/**
 	 * Create the selection for the post method
 	 *
-	 * @param int		$value	the selected option
-	 * @param string	$key	config key passed on to h_radio()
-	 * @return string			Radio buttons html, built by phpBB's h_radio()
+	 * @param int	$value	the selected option
+	 * @return array		Radio button options, see radio_options()
 	 */
-	public function poster_select($value, $key = '')
+	public function poster_select($value)
 	{
 		$radio_ary = [
 			$this->contact_constants['CONTACT_POST_NEITHER']	=> 'CONTACT_POST_NEITHER',
@@ -422,7 +419,32 @@ class contactadmin
 			$this->contact_constants['CONTACT_POST_ALL']		=> 'CONTACT_POST_ALL',
 		];
 
-		return h_radio('contact_bot_poster', $radio_ary, $value, $key);
+		return $this->radio_options($radio_ary, $value);
+	}
+
+	/**
+	 * Build radio button options for the ACP template
+	 *
+	 * The template renders the buttons itself, because phpBB 4.0 removed
+	 * h_radio() and its replacement only builds config[...] field names.
+	 *
+	 * @param array	$radio_ary	language keys keyed by option value
+	 * @param int	$value		the selected option
+	 * @return array			Options with VALUE, LABEL and S_CHECKED
+	 */
+	private function radio_options(array $radio_ary, $value)
+	{
+		$options = [];
+		foreach ($radio_ary as $option_value => $lang_key)
+		{
+			$options[] = [
+				'VALUE'		=> $option_value,
+				'LABEL'		=> $this->language->lang($lang_key),
+				'S_CHECKED'	=> ($option_value == $value),
+			];
+		}
+
+		return $options;
 	}
 
 	/**
