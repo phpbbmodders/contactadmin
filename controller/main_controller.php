@@ -171,7 +171,7 @@ class main_controller
 			// add an entry into the error log
 			$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_EMAIL_INVALID', time());
 
-			$message = $this->language->lang('CONTACT_MAIL_DISABLED', '<a href="mailto:' . htmlspecialchars($this->config['board_contact']) . '">', '</a>');
+			$message = $this->language->lang('CONTACT_MAIL_DISABLED', '<a href="mailto:' . utf8_htmlspecialchars($this->config['board_contact']) . '">', '</a>');
 
 			return $this->helper->message($message);
 		}
