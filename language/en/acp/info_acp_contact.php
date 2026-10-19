@@ -43,7 +43,7 @@ $lang = array_merge($lang, [
 	// Log entries
 	'LOG_CONTACT_BOT_INVALID'		=> '<strong>The Contact Admin extension bot has an invalid user id selected:</strong><br />User ID %1$s',
 	'LOG_CONTACT_FORUM_INVALID'		=> '<strong>The Contact Admin extension forum has an invalid forum selected:</strong><br />Forum ID %1$s',
-	'LOG_CONTACT_EMAIL_INVALID'		=> '<strong>The Contact Admin extension is allowing emails but the forum is not setup to allow emails.  The extension has been disabled.',
+	'LOG_CONTACT_EMAIL_INVALID'		=> '<strong>The Contact Admin extension is set to send emails, but the board is not set up to send emails.</strong>',
 	'LOG_CONTACT_NONE'				=> '<strong>No Administrators are allowing users to contact them via %1$s in the Contact Admin extension</strong>',
 	'LOG_CONTACT_CONFIG_UPDATE'		=> '<strong>Updated Contact Admin config settings</strong>',
 ]);

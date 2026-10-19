@@ -145,8 +145,6 @@ class contactadmin
 
 				return $bkup_data;
 
-			break;
-
 			// now we restore the users stuff
 			case 'restore':
 
@@ -176,9 +174,9 @@ class contactadmin
 			case 'contact_check_forum':
 
 				$sql = 'SELECT forum_name
-				FROM ' . FORUMS_TABLE . '
-				WHERE forum_id = ' . (int) $forum_id . '
-				AND forum_type = ' . FORUM_POST;
+					FROM ' . FORUMS_TABLE . '
+					WHERE forum_id = ' . (int) $forum_id . '
+						AND forum_type = ' . FORUM_POST;
 				$result = $this->db->sql_query($sql);
 
 				$row = $this->db->sql_fetchrow($result);
@@ -195,7 +193,7 @@ class contactadmin
 					$this->contact_send_email($email_template, $email_message);
 
 					// add an entry into the error log
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_FORUM_INVALID',  time(), [$forum_id, $row]);
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_FORUM_INVALID', time(), [$forum_id]);
 
 					// show a message to the user
 					$message = $this->language->lang('CONTACT_ERROR') . '<br /><br />' . $this->language->lang('RETURN_INDEX', '<a href="' . append_sid("{$this->root_path}index.$this->php_ext") . '">', '</a>');
@@ -205,7 +203,7 @@ class contactadmin
 				else if (!$row)
 				{
 					// add an entry into the error log
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_FORUM_INVALID',  time(), [$forum_id, $row]);
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_FORUM_INVALID', time(), [$forum_id]);
 
 					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . $this->config['board_contact'] . '">', '</a>');
 
@@ -219,7 +217,7 @@ class contactadmin
 
 				$sql = 'SELECT username
 					FROM ' . USERS_TABLE . '
-						WHERE user_id = ' . (int) $bot_id;
+					WHERE user_id = ' . (int) $bot_id;
 				$result = $this->db->sql_query($sql);
 				$row = $this->db->sql_fetchrow($result);
 				$this->db->sql_freeresult($result);
@@ -234,7 +232,7 @@ class contactadmin
 					$this->contact_send_email($email_template, $email_message);
 
 					// add an entry into the log error table
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_BOT_INVALID',  time(), [$bot_id, $row]);
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_BOT_INVALID', time(), [$bot_id]);
 
 					// show a message to the user
 					$message = $this->language->lang('CONTACT_ERROR') . '<br /><br />' . $this->language->lang('RETURN_INDEX', '<a href="' . append_sid("{$this->root_path}index.$this->php_ext") . '">', '</a>');
@@ -244,7 +242,7 @@ class contactadmin
 				else if (!$row)
 				{
 					// add an entry into the log error table
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_BOT_INVALID',  time(), [$bot_id, $row]);
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_BOT_INVALID', time(), [$bot_id]);
 
 					// show a message to the user
 					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . $this->config['board_contact'] . '">', '</a>');
@@ -276,7 +274,7 @@ class contactadmin
 					$this->contact_send_email($email_template, $email_message);
 
 					// add an entry into the log error table
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_NONE',  time(), [$error]);
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_NONE', time(), [$error]);
 
 					// show a message to the user
 					$message = $this->language->lang('CONTACT_ERROR') . '<br /><br />' . $this->language->lang('RETURN_INDEX', '<a href="' . append_sid("{$this->root_path}index.$this->php_ext") . '">', '</a>');
@@ -286,7 +284,7 @@ class contactadmin
 				else
 				{
 					// add an entry into the log error table
-					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_NONE',  time(), [$error]);
+					$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_CONTACT_NONE', time(), [$error]);
 
 					// show a message to the user
 					$message = $this->language->lang('CONTACT_DISABLED', '<a href="mailto:' . $this->config['board_contact'] . '">', '</a>');
@@ -306,14 +304,14 @@ class contactadmin
 	 */
 	private function contact_send_email($email_template, $email_message)
 	{
-		$dir_array = $this->dir_to_array($this->root_path .'ext/phpbbmodders/contactadmin/language');
+		$dir_array = $this->dir_to_array($this->root_path . 'ext/phpbbmodders/contactadmin/language');
 
 		$lang = (in_array($this->config['default_lang'], $dir_array)) ? $this->config['default_lang'] : 'en';
 
 		// No from address: the messenger sends from the board email address by default
 		$this->send_email($email_template, $lang, ['user_email' => $this->config['board_email']], [
 			'SUBJECT'		=> $this->language->lang('CONTACT_BOT_SUBJECT'),
-			'EMAIL_SIG'  	=> $this->config['board_email_sig'],
+			'EMAIL_SIG'		=> $this->config['board_email_sig'],
 			'MESSAGE'		=> $email_message,
 		]);
 
@@ -434,7 +432,7 @@ class contactadmin
 		$radio_ary = [
 			$this->contact_constants['CONTACT_WHO_ALL_ADMINS']		=> 'CONTACT_WHO_ALL_ADMINS',
 			$this->contact_constants['CONTACT_WHO_BOARD_DEFAULT']	=> 'CONTACT_WHO_BOARD_DEFAULT',
-			$this->contact_constants['CONTACT_WHO_BOARD_FOUNDER']		=> 'CONTACT_WHO_BOARD_FOUNDER',
+			$this->contact_constants['CONTACT_WHO_BOARD_FOUNDER']	=> 'CONTACT_WHO_BOARD_FOUNDER',
 		];
 
 		return $this->radio_options($radio_ary, $value);
@@ -535,9 +533,9 @@ class contactadmin
 				'username'		=> !empty($this->config['board_contact_name']) ? $this->config['board_contact_name'] : $this->config['sitename'],
 				'user_email'	=> $this->config['board_contact'],
 				'user_lang'		=> $this->config['default_lang'],
-				'user_notify_type'	=> 0,
+				'user_notify_type'	=> NOTIFY_EMAIL,
 				'user_dateformat'	=> $this->config['default_dateformat'],
-				'user_timezone'	=> $this->config['board_timezone']
+				'user_timezone'	=> $this->config['board_timezone'],
 			];
 
 			return $contact_users;
@@ -647,7 +645,8 @@ class contactadmin
 
 		return new JsonResponse([
 			'error'		=> false,
-			'user_link'	=> '<a href="' . append_sid("{$this->root_path}memberlist.$this->php_ext", 'mode=viewprofile&amp;u=' . $bot_user_info['user_id']) . '" target="_blank">' . $bot_user_info['username'] . '</a>',
+			// A full URL: the link is shown on the ACP page, but this route's root path is relative to app.php/contact_bot_info/N
+			'user_link'	=> '<a href="' . append_sid(generate_board_url() . '/memberlist.' . $this->php_ext, 'mode=viewprofile&amp;u=' . (int) $bot_user_info['user_id']) . '" target="_blank">' . $bot_user_info['username'] . '</a>',
 		]);
 	}
 
@@ -659,9 +658,9 @@ class contactadmin
 	*/
 	public function dir_to_array($directory)
 	{
-		$directories = glob($directory . '/*' , GLOB_ONLYDIR);
+		$directories = glob($directory . '/*', GLOB_ONLYDIR) ?: [];
 		$dir_array = [];
-		foreach ($directories as $key => $value)
+		foreach ($directories as $value)
 		{
 			$dir_array[] = substr(strrchr($value, '/'), 1);
 		}

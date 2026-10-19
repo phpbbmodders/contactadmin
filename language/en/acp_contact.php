@@ -38,11 +38,11 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
-	'ADMINS_NOT_EXIST_EMAIL'		=> 'There are no Administrators who allow emails.  You must choose a different method of contact.',
+	'ADMINS_NOT_EXIST_EMAIL'		=> 'There are no Administrators who allow emails. You must choose a different method of contact.',
 	'ADMINS_NOT_EXIST_PM'		=> 'There are no Administrators who allow private messages. You must choose a different method of contact.',
 	'CONTACT_CONFIG_SAVED'			=> 'Contact Admin configuration has been updated',
 	'CONTACT_ACP_CONFIRM'				=> 'Enable visual confirmation',
-	'CONTACT_ACP_CONFIRM_EXPLAIN'		=> 'If you enable this option, users will have to enter a visual confirmation to send the message.<br>This is to prevent spam messages. Note that this option is for the contact page only.  It does not affect other visual confirmation settings',
+	'CONTACT_ACP_CONFIRM_EXPLAIN'		=> 'If you enable this option, users will have to enter a visual confirmation to send the message.<br>This is to prevent spam messages. Note that this option is for the contact page only. It does not affect other visual confirmation settings',
 	'CONTACT_ATTACHMENTS'				=> 'Attachments allowed',
 	'CONTACT_ATTACHMENTS_EXPLAIN'		=> 'If set attachments will be allowed in posting to the forum and private messages.<br>The extensions allowed are the same as the board configuration.<br><span style="color:red;">Does not apply for contact method via “EMail”.</span>',
 	'CONTACT_CONFIRM_GUESTS'			=> 'Visual confirmation for guests only',
@@ -60,7 +60,7 @@ $lang = array_merge($lang, [
 	'CONTACT_BOT_FORUM'				=> 'Contact bot forum',
 	'CONTACT_BOT_FORUM_EXPLAIN'		=> 'Select the forum, where the contact bot should post to, if the contact method is set to “Forum post”',
 	'CONTACT_BOT_POSTER'			=> 'Bot as Poster',
-	'CONTACT_BOT_POSTER_EXPLAIN'	=> 'If set PM’s and posts will seem to come from the contact bot user chosen above based on the settings here. If “Neither” is selected then the bot is not used as the poster.  Posts and PM’s will be posted based on the information entered in the contact form',
+	'CONTACT_BOT_POSTER_EXPLAIN'	=> 'If set PM’s and posts will seem to come from the contact bot user chosen above based on the settings here. If “Neither” is selected then the bot is not used as the poster. Posts and PM’s will be posted based on the information entered in the contact form',
 	'CONTACT_BOT_USER'				=> 'Contact bot user',
 	'CONTACT_BOT_USER_EXPLAIN'		=> 'Select the user that messages will be posted under if the contact method is set to “Private Message” or “Forum Post”.',
 	'CONTACT_NO_BOT_USER'			=> '<strong>The contact bot user chosen does not exist</strong>',

@@ -106,17 +106,20 @@ class ext extends \phpbb\extension\base
 	 *
 	 * Rows are filtered in PHP rather than with LIKE, because namespace
 	 * backslashes and underscores are special characters in LIKE patterns
-	 * on some databases. The tables involved are small.
+	 * on some databases. The tables involved are small, and each changed row
+	 * gets its own new value, so it is one UPDATE per row; this runs once,
+	 * when an old install is moved.
 	 */
 	protected function move_old_install()
 	{
 		$db = $this->container->get('dbal.conn');
-		$prefix = $this->container->getParameter('core.table_prefix');
 
 		$db->sql_transaction('begin');
 
 		// Migration history, including each migration's dependency list
-		$result = $db->sql_query('SELECT migration_name, migration_depends_on FROM ' . $prefix . 'migrations');
+		$sql = 'SELECT migration_name, migration_depends_on
+			FROM ' . MIGRATIONS_TABLE;
+		$result = $db->sql_query($sql);
 		$rows = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
@@ -134,14 +137,19 @@ class ext extends \phpbb\extension\base
 				continue;
 			}
 
-			$db->sql_query('UPDATE ' . $prefix . 'migrations SET ' . $db->sql_build_array('UPDATE', [
-				'migration_name'		=> $name,
-				'migration_depends_on'	=> serialize($depends_on),
-			]) . " WHERE migration_name = '" . $db->sql_escape($row['migration_name']) . "'");
+			$sql = 'UPDATE ' . MIGRATIONS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', [
+					'migration_name'		=> $name,
+					'migration_depends_on'	=> serialize($depends_on),
+				]) . "
+				WHERE migration_name = '" . $db->sql_escape($row['migration_name']) . "'";
+			$db->sql_query($sql);
 		}
 
 		// Module classes and their "ext_vendor/name" auth checks
-		$result = $db->sql_query('SELECT module_id, module_basename, module_auth FROM ' . $prefix . 'modules');
+		$sql = 'SELECT module_id, module_basename, module_auth
+			FROM ' . MODULES_TABLE;
+		$result = $db->sql_query($sql);
 		$rows = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 
@@ -152,17 +160,21 @@ class ext extends \phpbb\extension\base
 
 			if ($basename !== $row['module_basename'] || $auth !== $row['module_auth'])
 			{
-				$db->sql_query('UPDATE ' . $prefix . 'modules SET ' . $db->sql_build_array('UPDATE', [
-					'module_basename'	=> $basename,
-					'module_auth'		=> $auth,
-				]) . ' WHERE module_id = ' . (int) $row['module_id']);
+				$sql = 'UPDATE ' . MODULES_TABLE . '
+					SET ' . $db->sql_build_array('UPDATE', [
+						'module_basename'	=> $basename,
+						'module_auth'		=> $auth,
+					]) . '
+					WHERE module_id = ' . (int) $row['module_id'];
+				$db->sql_query($sql);
 			}
 		}
 
 		// The old extension's own record (only once it's disabled)
-		$db->sql_query('DELETE FROM ' . $prefix . "ext
+		$sql = 'DELETE FROM ' . EXT_TABLE . "
 			WHERE ext_name = '" . $db->sql_escape(self::OLD_EXT_NAME) . "'
-				AND ext_active = 0");
+				AND ext_active = 0";
+		$db->sql_query($sql);
 
 		$db->sql_transaction('commit');
 	}
