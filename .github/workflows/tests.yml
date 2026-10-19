@@ -89,7 +89,7 @@ jobs:
     # EPV (Extension Pre Validator), failing on any Fatal or Error finding not
     # listed in .github/epv-allowed.txt
     epv:
-        uses: phpbbmodders/.github/.github/workflows/epv.yml@3dcf8695befbfd207780c5a36d75799e6befb4a8
+        uses: phpbbmodders/.github/.github/workflows/epv.yml@v1
         with:
             EXTNAME: phpbbmodders/contactadmin
             PHPBB_BRANCHES: '["3.3.x", "master"]'
