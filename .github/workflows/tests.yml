@@ -4,7 +4,6 @@ env:
     EXTNAME: phpbbmodders/contactadmin # Your extension vendor/package name
     SNIFF: 1            # Run code sniffer on your code? 1 or 0
     IMAGE_ICC: 1        # Run icc profile sniffer on your images? 1 or 0
-    EPV: 1              # Run EPV (Extension Pre Validator) on your code? 1 or 0
     EXECUTABLE_FILES: 1 # Run check for executable files? 1 or 0
 
 on:
@@ -18,7 +17,7 @@ on:
             - develop
 
 jobs:
-    # START Basic Checks Job (EPV, code sniffer, images check, etc.)
+    # START Basic Checks Job (code sniffer, images check, etc.)
     basic-checks:
         runs-on: ubuntu-latest
         strategy:
@@ -30,17 +29,11 @@ jobs:
                       db: 'none'
                       NOTESTS: 1
                       phpbb: '3.3.x'
-                      composer: 'composer'
-                      epv: 'dev-master'
-                    # phpBB 4.0 (the master branch) with its minimum PHP. EPV's
-                    # phpBB 4.0 branch, installed with phpBB's own Composer, as
-                    # phpbb-extensions/test-framework does for phpBB 4.0
+                    # phpBB 4.0 (the master branch) with its minimum PHP
                     - php: '8.2'
                       db: 'none'
                       NOTESTS: 1
                       phpbb: 'master'
-                      composer: 'php ../composer.phar'
-                      epv: 'dev-epv-phpbb4'
 
         name: PHP ${{ matrix.php }} - ${{ matrix.db }}${{ matrix.phpbb == 'master' && ' - phpBB 4.0' || '' }}
 
@@ -75,11 +68,6 @@ jobs:
               run: .github/setup-phpbb.sh $DB $PHP_VERSION $NOTESTS
               working-directory: ./phpBB3
 
-            - name: Setup EPV
-              if: ${{ env.EPV != 0 }}
-              run: ${{ matrix.composer }} require phpbb/epv:${{ matrix.epv }} --dev --no-interaction --ignore-platform-reqs
-              working-directory: ./phpBB3/phpBB
-
             - name: Run code sniffer
               if: ${{ env.SNIFF != 0 }}
               env:
@@ -96,9 +84,12 @@ jobs:
               if: ${{ env.EXECUTABLE_FILES != 0 }}
               run: .github/ext-check-executable-files.sh ./ $EXTNAME
               working-directory: ./phpBB3
-
-            - name: Run EPV
-              if: ${{ env.EPV != 0 }}
-              run: phpBB/vendor/bin/EPV.php run --dir="phpBB/ext/$EXTNAME/"
-              working-directory: ./phpBB3
     # END Basic Checks Job
+
+    # EPV (Extension Pre Validator), failing on any Fatal or Error finding not
+    # listed in .github/epv-allowed.txt
+    epv:
+        uses: phpbbmodders/.github/.github/workflows/epv.yml@v1
+        with:
+            EXTNAME: phpbbmodders/contactadmin
+            PHPBB_BRANCHES: '["3.3.x", "master"]'
