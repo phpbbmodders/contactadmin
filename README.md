@@ -16,11 +16,11 @@ A contact form that lets guests and members reach the board administrators by em
 
 ## Screenshots
 
-<a href="docs/images/screenshots/contactadmin-guest-form.png"><img src="docs/images/screenshots/contactadmin-guest-form.png" width="560" height="398" alt="Guest contact form"></a>
+<a href="docs/images/screenshots/contactadmin-guest-form.png"><img src="docs/images/screenshots/contactadmin-guest-form.png" width="560" height="394" alt="Guest contact form"></a>
 
 <a href="docs/images/screenshots/contactadmin-acp-settings.png"><img src="docs/images/screenshots/contactadmin-acp-settings.png" width="560" height="750" alt="ACP configuration"></a>
 
-<a href="docs/images/screenshots/contactadmin-member-basic.png"><img src="docs/images/screenshots/contactadmin-member-basic.png" width="560" height="398" alt="Signed-in contact form"></a>
+<a href="docs/images/screenshots/contactadmin-member-basic.png"><img src="docs/images/screenshots/contactadmin-member-basic.png" width="560" height="394" alt="Signed-in contact form"></a>
 
 Click an image for the full size. See the [screenshot gallery](docs/images/screenshots/README.md) for captions.
 
