@@ -2,7 +2,7 @@ name: Lint
 
 # PHP syntax check on the lowest PHP version this extension supports and the
 # newest one phpBB 3.3 supports. tests.yml runs phpBB's own checks (code
-# sniffer, EPV) on phpBB 3.3 with PHP 7.4 and on phpBB 4.0 with PHP 8.2.
+# sniffer, EPV) on phpBB 3.3 and phpBB 4.0 with PHP 8.3.
 on:
   push:
     branches:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php: ['7.4', '8.4']
+        php: ['8.3', '8.4']
     steps:
       - uses: actions/checkout@v4
 

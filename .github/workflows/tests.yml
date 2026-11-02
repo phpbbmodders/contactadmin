@@ -25,12 +25,12 @@ jobs:
                # php-versions: ['8.1']
                 include:
                     # phpBB 3.3 with the extension's minimum PHP
-                    - php: '7.4'
+                    - php: '8.3'
                       db: 'none'
                       NOTESTS: 1
                       phpbb: '3.3.x'
-                    # phpBB 4.0 (the master branch) with its minimum PHP
-                    - php: '8.2'
+                    # phpBB 4.0 (the master branch) with the extension's minimum PHP
+                    - php: '8.3'
                       db: 'none'
                       NOTESTS: 1
                       phpbb: 'master'
