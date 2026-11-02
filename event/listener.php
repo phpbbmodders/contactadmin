@@ -155,6 +155,10 @@ class listener implements EventSubscriberInterface
 			$this->template->assign_vars([
 				'U_CONTACT_US'		=> false,
 				'U_CONTACTADMIN'	=> $this->helper->route('phpbbmodders_contactadmin_displayform'),
+
+				// Which navigation bars show the "Contact us" link
+				'S_CONTACTADMIN_HEADER_LINK'	=> !empty($this->config['contactadmin_header_link']),
+				'S_CONTACTADMIN_FOOTER_LINK'	=> !empty($this->config['contactadmin_footer_link']),
 			]);
 		}
 	}

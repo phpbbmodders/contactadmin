@@ -70,6 +70,10 @@ $lang = array_merge($lang, [
 	'CONTACT_USERNAME_CHK_EXPLAIN'	=> 'If set yes, the user’s name that is entered will be checked against those in the database. If the name is found the user will be presented with an error and asked to input a different user name',
 	'CONTACT_EMAIL_CHK'				=> 'Check Email',
 	'CONTACT_EMAIL_CHK_EXPLAIN'		=> 'If set yes, the user’s email address will be checked against those in the database. If the email address is found the user will be presented with an error and asked to input a different email address',
+	'CONTACT_HEADER_LINK'			=> 'Show link in header navigation',
+	'CONTACT_HEADER_LINK_EXPLAIN'	=> 'Show a “Contact us” link in the navigation bar at the top of every page.',
+	'CONTACT_FOOTER_LINK'			=> 'Show link in footer navigation',
+	'CONTACT_FOOTER_LINK_EXPLAIN'	=> 'Show a “Contact us” link in the navigation bar at the bottom of every page. With both links off, the contact page still works at its usual address.',
 
 	// Contact methods
 	'CONTACT_METHOD_EMAIL'			=> 'Email',

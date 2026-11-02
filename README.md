@@ -6,7 +6,7 @@ A contact form that lets guests and members reach the board administrators by em
 
 ## Features
 
-- Replaces phpBB's built-in contact page and links to it from the header, the footer, failed logins and the registration page.
+- Replaces phpBB's built-in contact page and links to it from the header, the footer, failed logins and the registration page. The header and footer links can each be turned off in the ACP.
 - Messages go out by email, as a private message, or as a post in a forum you choose. Send to all administrators, the board founder or the board's default email address.
 - Optional list of contact reasons for the sender to pick from.
 - Private messages and posts can come from a "contact bot" user, for guests only or for everyone.
