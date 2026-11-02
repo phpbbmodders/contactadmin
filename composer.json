@@ -3,8 +3,8 @@
 	"type": "phpbb-extension",
 	"description": "A contact form that lets guests and members reach the board administrators by email, private message or forum post.",
 	"homepage": "https://www.phpbbmodders.com/",
-	"version": "1.6.1-dev",
-	"time": "2026-10-18",
+	"version": "1.6.2-dev",
+	"time": "2026-11-01",
 	"keywords": [
 		"phpbb",
 		"extension",
