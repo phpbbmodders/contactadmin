@@ -96,6 +96,18 @@
 			<span>{{ lang('CONTACT_WHO_EXPLAIN') }}</span></dt>
 			<dd>{% for option in loops.contact_who %}<label><input type="radio" class="radio" name="contact_who" value="{{ option.VALUE }}"{% if loop.first %} id="contact_who"{% endif %}{% if option.S_CHECKED %} checked="checked"{% endif %} /> {{ option.LABEL }}</label>{% endfor %}</dd>
 		</dl>
+		<dl>
+			<dt><label for="header_link">{{ lang('CONTACT_HEADER_LINK') ~ lang('COLON') }}</label><br>
+			<span>{{ lang('CONTACT_HEADER_LINK_EXPLAIN') }}</span></dt>
+			<dd><label><input type="radio" class="radio" name="header_link" value="1" {% if CONTACT_HEADER_LINK %}id="header_link" checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+			<label><input type="radio" class="radio" name="header_link" value="0" {% if not CONTACT_HEADER_LINK %}id="header_link" checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="footer_link">{{ lang('CONTACT_FOOTER_LINK') ~ lang('COLON') }}</label><br>
+			<span>{{ lang('CONTACT_FOOTER_LINK_EXPLAIN') }}</span></dt>
+			<dd><label><input type="radio" class="radio" name="footer_link" value="1" {% if CONTACT_FOOTER_LINK %}id="footer_link" checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+			<label><input type="radio" class="radio" name="footer_link" value="0" {% if not CONTACT_FOOTER_LINK %}id="footer_link" checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
+		</dl>
 	</fieldset>
 	<fieldset class="contact-options">
 		<legend>{{ lang('CONTACT_POST_OPTIONS') }}</legend>

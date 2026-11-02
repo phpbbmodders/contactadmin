@@ -262,6 +262,8 @@ class admin_controller
 			'CONTACT_USERNAME_CHK'			=> $this->config['contactadmin_username_chk'],
 			'CONTACT_EMAIL_CHK'				=> $this->config['contactadmin_email_chk'],
 			'CONTACT_GDPR'					=> $this->config['contactadmin_gdpr'],
+			'CONTACT_HEADER_LINK'			=> $this->config['contactadmin_header_link'],
+			'CONTACT_FOOTER_LINK'			=> $this->config['contactadmin_footer_link'],
 			'CONTACT_REASONS'				=> $contact_admin_reasons,
 			'CONTACT_METHOD_EMAIL'			=> (int) $contact_method_email,
 			'CONTACT_METHOD_PM'				=> (int) $contact_method_pm,
@@ -353,6 +355,8 @@ class admin_controller
 		$this->config->set('contactadmin_bot_poster', $this->allowed_value($this->request->variable('contact_bot_poster', 0), [$constants['CONTACT_POST_NEITHER'], $constants['CONTACT_POST_GUEST'], $constants['CONTACT_POST_ALL']]));
 		$this->config->set('contactadmin_forum', $this->request->variable('forum', 0));
 		$this->config->set('contactadmin_gdpr', $this->request->variable('gdpr', 0));
+		$this->config->set('contactadmin_header_link', $this->request->variable('header_link', 0));
+		$this->config->set('contactadmin_footer_link', $this->request->variable('footer_link', 0));
 	}
 
 	/**
